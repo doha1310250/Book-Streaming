@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # MySQL Database
   db:
@@ -10,11 +8,11 @@ services:
       MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD:-toor}
       MYSQL_DATABASE: ${DATABASE_NAME:-book-streaming}
     ports:
-      - "3307:3306"  # Use 3307 to avoid conflict with local MySQL
+      - "3307:3306" # Use 3307 to avoid conflict with local MySQL
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -35,12 +33,12 @@ services:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD:-toor}
       DATABASE_NAME: ${DATABASE_NAME:-book-streaming}
     volumes:
-      - ./backend/images:/app/images  # Persist uploaded images
+      - ./backend/images:/app/images # Persist uploaded images
     depends_on:
       db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      test: [ "CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" ]
       interval: 30s
       timeout: 10s
       retries: 3

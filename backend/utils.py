@@ -10,7 +10,7 @@ from pathlib import Path
 import imghdr
 from fastapi import UploadFile, HTTPException, status, Depends
 
-from config import settings
+from config import settings, IMAGES_DIR
 from database import db
 
 # Validation functions
@@ -218,7 +218,7 @@ async def save_book_cover(file: UploadFile, book_title: str) -> str:
     # Generate unique filename
     extension = get_image_extension(file.content_type)
     filename = f"{clean_title}_{uuid.uuid4().hex[:8]}{extension}"
-    filepath = settings.IMAGES_DIR / filename
+    filepath = IMAGES_DIR / filename
     
     # Save file
     try:
@@ -254,7 +254,7 @@ def delete_book_cover(filename: str) -> bool:
     if not filename:
         return False
     
-    filepath = settings.IMAGES_DIR / filename
+    filepath = IMAGES_DIR / filename
     try:
         if filepath.exists():
             filepath.unlink()

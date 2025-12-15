@@ -11,10 +11,13 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 import os
 
-from config import settings
+from config import settings, IMAGES_DIR
 from database import db, init_database
 from models import *
 from utils import *
+
+# Re-import FastAPI's Path and Query after wildcard imports (utils imports pathlib.Path which overwrites)
+from fastapi import Path, Query
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -58,7 +61,7 @@ app.add_middleware(
 )
 
 # Mount images directory as static files
-app.mount("/images", StaticFiles(directory=settings.IMAGES_DIR), name="images")
+app.mount("/images", StaticFiles(directory=IMAGES_DIR), name="images")
 
 # Security
 security = HTTPBearer()

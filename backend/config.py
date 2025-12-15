@@ -1,6 +1,7 @@
 # config.py
 import os
 from pathlib import Path
+from typing import List
 from pydantic_settings import BaseSettings
 
 BASE_DIR = Path(__file__).parent
@@ -11,7 +12,7 @@ class Settings(BaseSettings):
     DATABASE_HOST: str = "127.0.0.1"
     DATABASE_PORT: int = 3306
     DATABASE_USER: str = "root"
-    DATABASE_PASSWORD: str = ""
+    DATABASE_PASSWORD: str = "toor"
     DATABASE_NAME: str = "book-streaming"
     
     # App
@@ -21,11 +22,14 @@ class Settings(BaseSettings):
     
     # File upload
     MAX_FILE_SIZE: int = 5 * 1024 * 1024  # 5MB
-    ALLOWED_IMAGE_TYPES: list = ["image/jpeg", "image/png", "image/jpg", "image/webp"]
-    IMAGES_DIR: Path = IMAGES_DIR
+    ALLOWED_IMAGE_TYPES: List[str] = ["image/jpeg", "image/png", "image/jpg", "image/webp"]
     
     class Config:
         env_file = ".env"
+
+    @property
+    def images_dir(self) -> Path:
+        return IMAGES_DIR
 
 settings = Settings()
 

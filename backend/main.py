@@ -763,7 +763,7 @@ async def get_book_reviews(
             total = total_result["total"] if total_result else 0
     
     return JSONResponse({
-        "items": [ReviewResponse(**review) for review in reviews],
+        "items": [ReviewResponse(**review).model_dump(mode='json') for review in reviews],
         "total": total,
         "page": offset // limit + 1 if limit > 0 else 1,
         "size": limit,

@@ -152,15 +152,25 @@ def generate_id() -> str:
 
 # Password hashing
 def hash_password(password: str) -> str:
-    """Hash password using bcrypt (simplified version)"""
+    """Hash password with salt (simplified version)"""
     # In production, use: bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+    # Store salt with hash in format: salt$hash
     salt = secrets.token_hex(16)
-    return hashlib.sha256((password + salt).encode()).hexdigest()
+    password_hash = hashlib.sha256((password + salt).encode()).hexdigest()
+    return f"{salt}${password_hash}"
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verify password (simplified version)"""
+    """Verify password against stored hash (simplified version)"""
     # In production, use: bcrypt.checkpw(plain_password.encode(), hashed_password.encode())
-    return hash_password(plain_password) == hashed_password
+    try:
+        # Extract salt and hash from stored password
+        salt, stored_hash = hashed_password.split("$", 1)
+        # Hash the plain password with the same salt
+        password_hash = hashlib.sha256((plain_password + salt).encode()).hexdigest()
+        return password_hash == stored_hash
+    except ValueError:
+        # If format is wrong, password doesn't match
+        return False
 
 # File handling
 def validate_image_file(file: UploadFile) -> Tuple[bool, str]:

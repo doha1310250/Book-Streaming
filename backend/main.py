@@ -1303,13 +1303,18 @@ async def get_users_i_follow(
                 total_result = cursor.fetchone()
                 total = total_result["total"] if total_result else 0
         
-        return JSONResponse({
+        # Convert datetime to string for JSON serialization
+        for user in following:
+            if user.get("followed_at"):
+                user["followed_at"] = user["followed_at"].isoformat()
+        
+        return {
             "following": following,
             "total": total,
             "page": offset // limit + 1 if limit > 0 else 1,
             "size": limit,
             "pages": (total + limit - 1) // limit if limit > 0 else 1
-        })
+        }
     except Exception as e:
         logger.error(f"Failed to fetch following list: {e}")
         raise HTTPException(
@@ -1344,13 +1349,18 @@ async def get_my_followers(
                 total_result = cursor.fetchone()
                 total = total_result["total"] if total_result else 0
         
-        return JSONResponse({
+        # Convert datetime to string for JSON serialization
+        for user in followers:
+            if user.get("followed_at"):
+                user["followed_at"] = user["followed_at"].isoformat()
+        
+        return {
             "followers": followers,
             "total": total,
             "page": offset // limit + 1 if limit > 0 else 1,
             "size": limit,
             "pages": (total + limit - 1) // limit if limit > 0 else 1
-        })
+        }
     except Exception as e:
         logger.error(f"Failed to fetch followers list: {e}")
         raise HTTPException(

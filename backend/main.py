@@ -63,6 +63,11 @@ app.add_middleware(
 # Mount images directory as static files
 app.mount("/images", StaticFiles(directory=IMAGES_DIR), name="images")
 
+# Mount frontend static files
+FRONTEND_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend")
+if os.path.exists(FRONTEND_DIR):
+    app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="frontend")
+
 # Security
 security = HTTPBearer()
 
@@ -84,6 +89,26 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         )
     
     return user
+
+# ============================================
+# FRONTEND ROUTES
+# ============================================
+
+@app.get("/", tags=["Frontend"], include_in_schema=False)
+async def serve_frontend():
+    """Serve the frontend index.html"""
+    index_path = os.path.join(FRONTEND_DIR, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    return {"message": "Welcome to Book Streaming API", "docs": "/docs"}
+
+@app.get("/dashboard", tags=["Frontend"], include_in_schema=False)
+async def serve_dashboard():
+    """Serve the dashboard page"""
+    dashboard_path = os.path.join(FRONTEND_DIR, "dashboard.html")
+    if os.path.exists(dashboard_path):
+        return FileResponse(dashboard_path)
+    return {"message": "Dashboard not found"}
 
 # ============================================
 # HEALTH CHECK
@@ -574,6 +599,28 @@ async def mark_book(
     
     logger.info(f"Book marked: {book_id} by user {current_user['user_id']}")
     return {"message": "Book marked successfully"}
+
+@app.delete("/books/{book_id}/mark", tags=["Marks"])
+async def unmark_book(
+    book_id: str = Path(..., description="Book ID"),
+    current_user: dict = Depends(get_current_user)
+):
+    """Unmark a book"""
+    with db.get_connection() as connection:
+        with db.get_cursor(connection) as cursor:
+            cursor.execute("""
+                DELETE FROM marks 
+                WHERE user_id = %s AND book_id = %s
+            """, (current_user["user_id"], book_id))
+            
+            if cursor.rowcount == 0:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Book not marked"
+                )
+    
+    logger.info(f"Book unmarked: {book_id} by user {current_user['user_id']}")
+    return {"message": "Book unmarked successfully"}
 
 @app.delete("/books/{book_id}/mark", tags=["Marks"])
 async def unmark_book(
@@ -1415,7 +1462,9 @@ async def get_following_activity(
                         b.*,
                         u.name as user_name,
                         'book_added' as activity_type,
-                        b.created_at as activity_time
+                        b.created_at as activity_time,
+                        NULL as duration_min,
+                        NULL as session_id
                     FROM books b
                     JOIN users u ON b.user_id = u.user_id
                     WHERE b.user_id IN (
@@ -1428,7 +1477,9 @@ async def get_following_activity(
                         b.*,
                         u.name as user_name,
                         'review_added' as activity_type,
-                        r.created_at as activity_time
+                        r.created_at as activity_time,
+                        NULL as duration_min,
+                        NULL as session_id
                     FROM reviews r
                     JOIN books b ON r.book_id = b.book_id
                     JOIN users u ON r.user_id = u.user_id
@@ -1436,9 +1487,25 @@ async def get_following_activity(
                         SELECT followed_id FROM followers 
                         WHERE follower_id = %s
                     )
+                    UNION ALL
+                    -- Get reading sessions by followed users
+                    SELECT 
+                        b.*,
+                        u.name as user_name,
+                        'reading_session' as activity_type,
+                        rs.start_time as activity_time,
+                        rs.duration_min,
+                        rs.id as session_id
+                    FROM reading_sessions rs
+                    JOIN books b ON rs.book_id = b.book_id
+                    JOIN users u ON rs.user_id = u.user_id
+                    WHERE rs.user_id IN (
+                        SELECT followed_id FROM followers 
+                        WHERE follower_id = %s
+                    )
                     ORDER BY activity_time DESC
                     LIMIT %s OFFSET %s
-                """, (current_user["user_id"], current_user["user_id"], limit, offset))
+                """, (current_user["user_id"], current_user["user_id"], current_user["user_id"], limit, offset))
                 activities = cursor.fetchall()
         
         # Convert cover filenames to URLs

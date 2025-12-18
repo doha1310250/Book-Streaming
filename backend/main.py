@@ -95,6 +95,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 # ============================================
 
 @app.get("/", tags=["Frontend"], include_in_schema=False)
+@app.get("/index.html", tags=["Frontend"], include_in_schema=False)
 async def serve_frontend():
     """Serve the frontend index.html"""
     index_path = os.path.join(FRONTEND_DIR, "index.html")
@@ -103,12 +104,58 @@ async def serve_frontend():
     return {"message": "Welcome to Book Streaming API", "docs": "/docs"}
 
 @app.get("/dashboard", tags=["Frontend"], include_in_schema=False)
+@app.get("/dashboard.html", tags=["Frontend"], include_in_schema=False)
 async def serve_dashboard():
     """Serve the dashboard page"""
     dashboard_path = os.path.join(FRONTEND_DIR, "dashboard.html")
     if os.path.exists(dashboard_path):
         return FileResponse(dashboard_path)
     return {"message": "Dashboard not found"}
+
+@app.get("/login", tags=["Frontend"], include_in_schema=False)
+@app.get("/login.html", tags=["Frontend"], include_in_schema=False)
+async def serve_login():
+    """Serve the login page"""
+    login_path = os.path.join(FRONTEND_DIR, "login.html")
+    if os.path.exists(login_path):
+        return FileResponse(login_path)
+    return {"message": "Login page not found"}
+
+@app.get("/timer", tags=["Frontend"], include_in_schema=False)
+@app.get("/timer.html", tags=["Frontend"], include_in_schema=False)
+async def serve_timer():
+    """Serve the timer page"""
+    timer_path = os.path.join(FRONTEND_DIR, "timer.html")
+    if os.path.exists(timer_path):
+        return FileResponse(timer_path)
+    return {"message": "Timer page not found"}
+
+@app.get("/profile", tags=["Frontend"], include_in_schema=False)
+@app.get("/profile.html", tags=["Frontend"], include_in_schema=False)
+async def serve_profile():
+    """Serve the profile page"""
+    profile_path = os.path.join(FRONTEND_DIR, "profile.html")
+    if os.path.exists(profile_path):
+        return FileResponse(profile_path)
+    return {"message": "Profile page not found"}
+
+# Serve CSS and JS files
+@app.get("/{filename}.css", tags=["Frontend"], include_in_schema=False)
+async def serve_css(filename: str):
+    """Serve CSS files"""
+    css_path = os.path.join(FRONTEND_DIR, f"{filename}.css")
+    if os.path.exists(css_path):
+        return FileResponse(css_path, media_type="text/css")
+    raise HTTPException(status_code=404, detail="CSS file not found")
+
+@app.get("/{filename}.js", tags=["Frontend"], include_in_schema=False)
+async def serve_js(filename: str):
+    """Serve JS files"""
+    js_path = os.path.join(FRONTEND_DIR, f"{filename}.js")
+    if os.path.exists(js_path):
+        return FileResponse(js_path, media_type="application/javascript")
+    raise HTTPException(status_code=404, detail="JS file not found")
+
 
 # ============================================
 # HEALTH CHECK
@@ -1071,16 +1118,20 @@ async def update_reading_session(
             detail="Reading session already ended"
         )
     
-    # Validate end time
-    if end_time < session["start_time"]:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="End time must be after start time"
-        )
-    
-    # Calculate duration
-    duration = end_time - session["start_time"]
-    duration_min = int(duration.total_seconds() / 60)
+    # Calculate duration - handle timezone-aware/naive datetime comparison
+    try:
+        start_time = session["start_time"]
+        # Make both datetimes naive for comparison
+        if hasattr(end_time, 'tzinfo') and end_time.tzinfo is not None:
+            end_time = end_time.replace(tzinfo=None)
+        if hasattr(start_time, 'tzinfo') and start_time.tzinfo is not None:
+            start_time = start_time.replace(tzinfo=None)
+        
+        duration = end_time - start_time
+        duration_min = max(0, int(duration.total_seconds() / 60))
+    except Exception as e:
+        logger.warning(f"Duration calculation error: {e}, defaulting to 0")
+        duration_min = 0
     
     try:
         with db.get_connection() as connection:

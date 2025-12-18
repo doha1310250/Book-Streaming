@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | BookTracker</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="profile.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand"><span class="logo-icon">📖</span><span class="logo-text">BookTracker</span></div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item"><span>📚</span> Library</a>
+                <a href="profile.html" class="nav-item active"><span>👤</span> Profile</a>
+                <div class="nav-divider"></div>
+                <a href="timer.html" class="nav-item highlight"><span>⏳</span> Start Session</a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-logout" id="logout-btn">Log Out</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="welcome-text">
+                    <h1>Your Profile</h1>
+                    <p>View your reading stats and manage your account.</p>
+                </div>
+            </header>
+
+            <!-- Stats Section -->
+            <section class="stats-section">
+                <h2>📊 Reading Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-icon">🔥</span>
+                        <span class="stat-value" id="stat-streak">0</span>
+                        <span class="stat-label">Day Streak</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">📚</span>
+                        <span class="stat-value" id="stat-books">0</span>
+                        <span class="stat-label">Books Read</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">⏱️</span>
+                        <span class="stat-value" id="stat-hours">0h</span>
+                        <span class="stat-label">Total Time</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">📝</span>
+                        <span class="stat-value" id="stat-sessions">0</span>
+                        <span class="stat-label">Sessions</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- User Info Section -->
+            <section class="user-section">
+                <h2>👤 Account Info</h2>
+                <div class="user-card">
+                    <div class="user-avatar" id="user-avatar">?</div>
+                    <div class="user-details">
+                        <h3 id="user-name">Loading...</h3>
+                        <p id="user-email">Loading...</p>
+                        <p class="user-since">Member since <span id="user-since">-</span></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Sessions -->
+            <section class="sessions-section">
+                <h2>📖 Recent Reading Sessions</h2>
+                <div class="sessions-list" id="sessions-list">
+                    <div class="empty-state">Loading sessions...</div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="profile.js"></script>
+</body>
+
+</html>

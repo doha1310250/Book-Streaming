@@ -1,0 +1,279 @@
+/* --- Root Variables & Reset --- */
+:root {
+    --primary-red: #a63d40;
+    --red-hover: #8e2121;
+    --bg-cream: #fdfaf6;
+    --card-white: #ffffff;
+    --text-main: #2d2323;
+    --text-muted: #6b5b5b;
+    --border-light: #eee3e1;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; outline: none; }
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-cream);
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    overflow: hidden; /* Prevent scrolling during session */
+}
+
+/* --- Layout --- */
+.app-wrapper {
+    width: 100%;
+    max-width: 480px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.top-nav {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    margin-bottom: 20px;
+}
+
+.icon-btn {
+    background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);
+}
+
+.session-status { 
+    font-weight: 600; 
+    letter-spacing: 1px; 
+    text-transform: uppercase; 
+    font-size: 0.75rem; 
+    margin-left: 15px; 
+}
+
+/* --- Typography --- */
+h1 { font-family: 'Playfair Display', serif; margin: 0; font-size: 1.4rem; }
+h2 { font-family: 'Playfair Display', serif; margin: 0; }
+p { color: var(--text-muted); margin: 4px 0 0 0; }
+
+/* --- Book Info Card --- */
+.book-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: var(--card-white);
+    padding: 16px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(166, 61, 64, 0.05);
+}
+
+.book-artwork img {
+    width: 60px;
+    height: 85px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* --- Timer Section --- */
+.timer-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.timer-display {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.progress-ring__circle {
+    transition: stroke-dashoffset 0.35s;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+}
+
+.time-overlay {
+    position: absolute;
+    text-align: center;
+}
+
+#display {
+    display: block;
+    font-size: 3.2rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-main);
+}
+
+.time-overlay label {
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+}
+
+/* --- Controls --- */
+.controls-card {
+    background: var(--card-white);
+    padding: 30px 24px;
+    border-radius: 32px 32px 0 0;
+    text-align: center;
+    margin: 0 -20px -20px -20px;
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.03);
+}
+
+.goal-text { font-size: 0.9rem; margin-bottom: 25px; font-weight: 500; color: var(--text-muted); }
+
+.action-buttons { display: flex; flex-direction: column; gap: 12px; }
+
+.btn-main {
+    background: var(--primary-red);
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 16px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-main:hover { background: var(--red-hover); transform: translateY(-2px); }
+
+.btn-outline {
+    background: transparent;
+    color: var(--primary-red);
+    border: 2.5px solid var(--primary-red);
+    padding: 16px;
+    border-radius: 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* --- Modal Styles --- */
+.hidden { display: none !important; }
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(45, 35, 35, 0.7);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: var(--card-white);
+    padding: 40px 30px;
+    border-radius: 32px;
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.success-icon {
+    font-size: 2.5rem;
+    background: var(--bg-cream);
+    width: 70px;
+    height: 70px;
+    line-height: 70px;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 25px 0;
+}
+
+.stat-card {
+    background: var(--bg-cream);
+    padding: 15px;
+    border-radius: 18px;
+}
+
+.stat-value { font-size: 1.4rem; font-weight: 700; color: var(--primary-red); display: block; }
+.stat-label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); }
+
+.log-form { text-align: left; }
+.input-wrapper label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; }
+
+.input-field-container { position: relative; display: flex; align-items: center; }
+
+#end-page {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid var(--border-light);
+    border-radius: 12px;
+    font-size: 1rem;
+}
+
+#end-page:focus { border-color: var(--primary-red); }
+
+.input-suffix { position: absolute; right: 15px; color: var(--text-muted); font-weight: 600; }
+
+.modal-actions { margin-top: 30px; display: flex; flex-direction: column; gap: 8px; }
+
+.btn-text {
+    background: none; border: none; color: var(--text-muted); font-weight: 600; cursor: pointer; padding: 10px;
+}
+
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { 
+    from { opacity: 0; transform: translateY(30px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+
+
+/* ... Keep existing styles until Animations ... */
+
+/* Responsive Adjustments */
+@media (max-width: 400px) {
+    .app-wrapper {
+        padding: 15px;
+    }
+
+    /* Scale down the timer for small screens */
+    .progress-ring {
+        width: 220px;
+        height: 220px;
+    }
+    
+    /* Recalculate center for smaller SVG if needed, 
+       but standardizing the scale is usually safer: */
+    .timer-display {
+        transform: scale(0.85);
+    }
+
+    #display {
+        font-size: 2.5rem;
+    }
+
+    .book-info {
+        padding: 12px;
+    }
+
+    h1 {
+        font-size: 1.2rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { 
+    from { opacity: 0; transform: translateY(30px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}

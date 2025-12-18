@@ -1,0 +1,135 @@
+:root {
+    --primary-red: #a63d40;
+    --red-hover: #8e2121;
+    --bg-cream: #fdfaf6;
+    --white: #ffffff;
+    --text-dark: #2d2323;
+    --text-muted: #6b5b5b;
+    --border: #eee3e1;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-cream);
+    color: var(--text-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 24px;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.back-link:hover { color: var(--primary-red); }
+
+.auth-card {
+    background: var(--white);
+    padding: 40px;
+    border-radius: 32px;
+    box-shadow: 0 10px 40px rgba(166, 61, 64, 0.05);
+    text-align: center;
+}
+
+.auth-logo {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 16px;
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+}
+
+.auth-header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 32px;
+}
+
+/* Form Styles */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-align: left;
+}
+
+.hidden { display: none !important; }
+
+.input-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-dark);
+}
+
+input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+input:focus {
+    border-color: var(--primary-red);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(166, 61, 64, 0.1);
+}
+
+.btn-main {
+    background: var(--primary-red);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+
+.btn-main:hover { background: var(--red-hover); }
+
+/* Footer toggle */
+.auth-footer {
+    margin-top: 32px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.auth-footer a {
+    color: var(--primary-red);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 30px 20px;
+        border-radius: 20px;
+    }
+    h1 { font-size: 1.5rem; }
+}

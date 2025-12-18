@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join the Club | BookTracker</title>
+    <link rel="stylesheet" href="/static/login.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="auth-container">
+        <a href="index.html" class="back-link">← Back to home</a>
+        <div class="auth-card">
+            <div class="auth-header">
+                <span class="auth-logo">📖</span>
+                <h1 id="auth-title">Welcome Back</h1>
+                <p id="auth-subtitle">Log in to continue your reading journey.</p>
+            </div>
+
+            <form id="auth-form" onsubmit="event.preventDefault(); location.href='dashboard.html';">
+                <div class="input-group hidden" id="name-group">
+                    <label>Full Name</label>
+                    <input type="text" id="user-fullname" placeholder="Enter your name">
+                </div>
+
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="name@example.com" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-main" id="submit-btn">Continue</button>
+            </form>
+
+            <div class="auth-footer">
+                <p id="toggle-wrapper">New here? <a href="#" id="toggle-auth">Create Account</a></p>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+    <script src="login.js"></script>
+</body>
+
+</html>

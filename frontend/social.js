@@ -154,11 +154,11 @@ async function loadFollowing() {
             const item = document.createElement('div');
             item.className = 'user-item';
             item.innerHTML = `
-                <div class="user-item-avatar">${initial}</div>
-                <div class="user-item-info">
+                <a href="user-profile.html?id=${user.user_id}" class="user-item-avatar clickable">${initial}</a>
+                <a href="user-profile.html?id=${user.user_id}" class="user-item-info clickable">
                     <div class="user-item-name">${user.name || 'Unnamed'}</div>
                     <div class="user-item-email">${user.email || ''}</div>
-                </div>
+                </a>
                 <button class="btn btn-secondary btn-follow btn-unfollow" data-user-id="${user.user_id}">
                     Unfollow
                 </button>
@@ -223,11 +223,11 @@ async function loadFollowers() {
             const item = document.createElement('div');
             item.className = 'user-item';
             item.innerHTML = `
-                <div class="user-item-avatar">${initial}</div>
-                <div class="user-item-info">
+                <a href="user-profile.html?id=${user.user_id}" class="user-item-avatar clickable">${initial}</a>
+                <a href="user-profile.html?id=${user.user_id}" class="user-item-info clickable">
                     <div class="user-item-name">${user.name || 'Unnamed'}</div>
                     <div class="user-item-email">${user.email || ''}</div>
-                </div>
+                </a>
                 ${isFollowing
                     ? `<button class="btn btn-secondary btn-follow btn-unfollow" data-user-id="${user.user_id}">Following</button>`
                     : `<button class="btn btn-primary btn-follow" data-user-id="${user.user_id}">Follow</button>`

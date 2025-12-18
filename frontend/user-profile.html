@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile | BookTracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="user-profile.css">
+</head>
+
+<body>
+    <div class="profile-layout">
+        <!-- Header -->
+        <header class="profile-header">
+            <a href="social.html" class="back-link">
+                <span>←</span>
+                <span>Back to Feed</span>
+            </a>
+            <div class="header-brand">
+                <span class="logo-mark">B</span>
+            </div>
+        </header>
+
+        <!-- Profile Content -->
+        <main class="profile-main">
+            <div class="profile-container">
+                <!-- User Card -->
+                <div class="user-card">
+                    <div class="user-avatar-large" id="user-avatar">?</div>
+                    <div class="user-details">
+                        <h1 class="user-name" id="user-name">Loading...</h1>
+                        <p class="user-email" id="user-email">Loading...</p>
+                        <p class="user-joined">Member since <span id="user-joined">-</span></p>
+                    </div>
+                    <button class="btn btn-primary" id="follow-btn">Follow</button>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="user-stats-grid">
+                    <div class="user-stat">
+                        <span class="stat-value" id="stat-streak">0</span>
+                        <span class="stat-label">Day Streak</span>
+                    </div>
+                    <div class="user-stat">
+                        <span class="stat-value" id="stat-books">0</span>
+                        <span class="stat-label">Books Read</span>
+                    </div>
+                    <div class="user-stat">
+                        <span class="stat-value" id="stat-time">0h</span>
+                        <span class="stat-label">Total Time</span>
+                    </div>
+                    <div class="user-stat">
+                        <span class="stat-value" id="stat-sessions">0</span>
+                        <span class="stat-label">Sessions</span>
+                    </div>
+                    <div class="user-stat">
+                        <span class="stat-value" id="stat-followers">0</span>
+                        <span class="stat-label">Followers</span>
+                    </div>
+                    <div class="user-stat">
+                        <span class="stat-value" id="stat-following">0</span>
+                        <span class="stat-label">Following</span>
+                    </div>
+                </div>
+
+                <!-- Reading Sessions -->
+                <div class="sessions-section">
+                    <div class="section-header">
+                        <h2 class="section-title-sm">Recent Reading Sessions</h2>
+                    </div>
+                    <div class="sessions-list" id="sessions-list">
+                        <div class="empty-state">
+                            <p>Loading sessions...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="app.js"></script>
+    <script src="user-profile.js"></script>
+</body>
+
+</html>

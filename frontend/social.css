@@ -217,6 +217,20 @@
     font-weight: 700;
     font-size: var(--font-size-sm);
     flex-shrink: 0;
+    text-decoration: none;
+}
+
+.user-item-avatar.clickable:hover {
+    background: var(--color-accent);
+}
+
+.user-item-info.clickable {
+    text-decoration: none;
+    color: inherit;
+}
+
+.user-item-info.clickable:hover .user-item-name {
+    color: var(--color-accent);
 }
 
 .user-item-info {

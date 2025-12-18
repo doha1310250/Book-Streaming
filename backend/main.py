@@ -148,6 +148,15 @@ async def serve_social():
         return FileResponse(social_path)
     return {"message": "Social page not found"}
 
+@app.get("/user-profile", tags=["Frontend"], include_in_schema=False)
+@app.get("/user-profile.html", tags=["Frontend"], include_in_schema=False)
+async def serve_user_profile():
+    """Serve the user profile page"""
+    profile_path = os.path.join(FRONTEND_DIR, "user-profile.html")
+    if os.path.exists(profile_path):
+        return FileResponse(profile_path)
+    return {"message": "User profile page not found"}
+
 # Serve CSS and JS files
 @app.get("/{filename}.css", tags=["Frontend"], include_in_schema=False)
 async def serve_css(filename: str):
@@ -333,6 +342,165 @@ async def update_current_user(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to update user"
+        )
+
+# ============================================
+# PUBLIC USER PROFILE ROUTES
+# ============================================
+
+@app.get("/users/{user_id}/profile", tags=["Users"])
+async def get_user_profile(
+    user_id: str = Path(..., description="User ID"),
+    current_user: dict = Depends(get_current_user)
+):
+    """Get a user's public profile by ID"""
+    # Handle 'me' as alias for current user
+    if user_id == "me":
+        user_id = current_user["user_id"]
+    
+    try:
+        with db.get_connection() as connection:
+            with db.get_cursor(connection) as cursor:
+                cursor.execute("""
+                    SELECT user_id, email, name, current_streak, created_at
+                    FROM users WHERE user_id = %s
+                """, (user_id,))
+                user = cursor.fetchone()
+                
+                if not user:
+                    raise HTTPException(
+                        status_code=status.HTTP_404_NOT_FOUND,
+                        detail="User not found"
+                    )
+                
+                # Get reading stats
+                cursor.execute("""
+                    SELECT 
+                        COUNT(DISTINCT book_id) as books_read,
+                        SUM(duration_min) as total_minutes,
+                        COUNT(*) as total_sessions
+                    FROM reading_sessions
+                    WHERE user_id = %s AND end_time IS NOT NULL
+                """, (user_id,))
+                stats = cursor.fetchone()
+                
+                # Get follower/following counts
+                cursor.execute("""
+                    SELECT 
+                        (SELECT COUNT(*) FROM followers WHERE followed_id = %s) as followers_count,
+                        (SELECT COUNT(*) FROM followers WHERE follower_id = %s) as following_count
+                """, (user_id, user_id))
+                social = cursor.fetchone()
+        
+        return {
+            "user_id": user["user_id"],
+            "name": user["name"],
+            "email": user["email"],
+            "current_streak": user["current_streak"],
+            "created_at": user["created_at"],
+            "books_read": stats["books_read"] or 0,
+            "total_minutes": stats["total_minutes"] or 0,
+            "total_sessions": stats["total_sessions"] or 0,
+            "followers_count": social["followers_count"] or 0,
+            "following_count": social["following_count"] or 0
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to fetch user profile: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch user profile"
+        )
+
+@app.get("/users/{user_id}/reading-sessions", tags=["Users"])
+async def get_user_reading_sessions(
+    user_id: str = Path(..., description="User ID"),
+    limit: int = Query(20, ge=1, le=100, description="Number of results"),
+    offset: int = Query(0, ge=0, description="Offset for pagination"),
+    current_user: dict = Depends(get_current_user)
+):
+    """Get a user's recent reading sessions"""
+    # Handle 'me' as alias for current user
+    if user_id == "me":
+        user_id = current_user["user_id"]
+    
+    try:
+        with db.get_connection() as connection:
+            with db.get_cursor(connection) as cursor:
+                # Check if user exists
+                cursor.execute("SELECT user_id FROM users WHERE user_id = %s", (user_id,))
+                if not cursor.fetchone():
+                    raise HTTPException(
+                        status_code=status.HTTP_404_NOT_FOUND,
+                        detail="User not found"
+                    )
+                
+                # Get reading sessions with book info
+                cursor.execute("""
+                    SELECT 
+                        rs.id, rs.start_time, rs.end_time, rs.duration_min,
+                        b.book_id, b.title, b.author_name, b.cover_url
+                    FROM reading_sessions rs
+                    JOIN books b ON rs.book_id = b.book_id
+                    WHERE rs.user_id = %s AND rs.end_time IS NOT NULL
+                    ORDER BY rs.start_time DESC
+                    LIMIT %s OFFSET %s
+                """, (user_id, limit, offset))
+                sessions = cursor.fetchall()
+        
+        # Convert cover URLs
+        for session in sessions:
+            if session["cover_url"]:
+                session["cover_url"] = get_cover_url(session["cover_url"])
+        
+        return sessions
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to fetch user reading sessions: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch reading sessions"
+        )
+
+@app.get("/users", tags=["Users"])
+async def search_users(
+    query: str = Query(None, description="Search query for name or email"),
+    limit: int = Query(20, ge=1, le=100, description="Number of results"),
+    offset: int = Query(0, ge=0, description="Offset for pagination"),
+    current_user: dict = Depends(get_current_user)
+):
+    """Search for users by name or email"""
+    try:
+        with db.get_connection() as connection:
+            with db.get_cursor(connection) as cursor:
+                if query:
+                    search_term = f"%{query}%"
+                    cursor.execute("""
+                        SELECT user_id, name, email, current_streak, created_at
+                        FROM users
+                        WHERE (name LIKE %s OR email LIKE %s) AND user_id != %s
+                        ORDER BY name
+                        LIMIT %s OFFSET %s
+                    """, (search_term, search_term, current_user["user_id"], limit, offset))
+                else:
+                    cursor.execute("""
+                        SELECT user_id, name, email, current_streak, created_at
+                        FROM users
+                        WHERE user_id != %s
+                        ORDER BY created_at DESC
+                        LIMIT %s OFFSET %s
+                    """, (current_user["user_id"], limit, offset))
+                
+                users = cursor.fetchall()
+        
+        return users
+    except Exception as e:
+        logger.error(f"Failed to search users: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to search users"
         )
 
 # ============================================

@@ -151,7 +151,7 @@ const APIService = {
     },
 
     async getReadingStats(period = 'week') {
-        return this.request(`/reading-sessions/stats?period=${period}`);
+        return this.request(`/users/me/reading-stats?period=${period}`);
     },
 
     // Reviews endpoints
@@ -197,6 +197,21 @@ const APIService = {
     async getFollowingActivity(params = {}) {
         const query = new URLSearchParams(params).toString();
         return this.request(`/users/me/following/activity${query ? '?' + query : ''}`);
+    },
+
+    // User profile endpoints
+    async searchUsers(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return this.request(`/users${query ? '?' + query : ''}`);
+    },
+
+    async getUserProfile(userId) {
+        return this.request(`/users/${userId}/profile`);
+    },
+
+    async getUserReadingSessions(userId, params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return this.request(`/users/${userId}/reading-sessions${query ? '?' + query : ''}`);
     },
 
     // Health check

@@ -69,12 +69,13 @@
 
     <!-- Session Complete Modal -->
     <div class="modal-overlay hidden" id="complete-modal">
-        <div class="modal">
-            <div class="modal-content" style="display: block; padding: var(--space-10);">
+        <div class="modal complete-modal">
+            <!-- Initial State -->
+            <div class="modal-content modal-state" id="modal-initial">
                 <div class="complete-header">
-                    <span class="complete-icon">✓</span>
-                    <h2 class="complete-title">Session Complete</h2>
-                    <p class="complete-subtitle">Great work! Keep the momentum going.</p>
+                    <span class="complete-icon">📖</span>
+                    <h2 class="complete-title">End Session?</h2>
+                    <p class="complete-subtitle">Great work! Let's save your progress.</p>
                 </div>
 
                 <div class="complete-stats">
@@ -93,7 +94,25 @@
                     <input type="number" id="end-page" class="form-input" placeholder="Where did you stop?">
                 </div>
 
-                <button class="btn btn-primary btn-block btn-lg" id="save-btn">Save & Continue</button>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" id="cancel-btn">Continue Reading</button>
+                    <button class="btn btn-primary" id="save-btn">Save Session</button>
+                </div>
+            </div>
+
+            <!-- Saving State -->
+            <div class="modal-content modal-state hidden" id="modal-saving">
+                <div class="saving-spinner"></div>
+                <h2 class="complete-title">Saving...</h2>
+                <p class="complete-subtitle">Recording your progress</p>
+            </div>
+
+            <!-- Success State -->
+            <div class="modal-content modal-state hidden" id="modal-success">
+                <div class="success-icon">✓</div>
+                <h2 class="complete-title">Session Saved!</h2>
+                <p class="complete-subtitle">Keep up the great reading habit.</p>
+                <p class="redirect-text">Redirecting to dashboard...</p>
             </div>
         </div>
     </div>

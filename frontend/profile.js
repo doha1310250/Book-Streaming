@@ -71,9 +71,9 @@ async function loadStats() {
         if (stats.total_sessions !== undefined) {
             document.getElementById('stat-sessions').textContent = stats.total_sessions;
         }
-        if (stats.total_duration_minutes !== undefined) {
-            const hours = Math.floor(stats.total_duration_minutes / 60);
-            const mins = stats.total_duration_minutes % 60;
+        if (stats.total_minutes !== undefined) {
+            const hours = Math.floor(stats.total_minutes / 60);
+            const mins = stats.total_minutes % 60;
             document.getElementById('stat-hours').textContent = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
         }
     } catch (error) {
@@ -110,8 +110,16 @@ async function loadRecentSessions() {
             // Duration
             let duration = '-';
             if (session.start_time && session.end_time) {
-                const mins = Math.round((new Date(session.end_time) - new Date(session.start_time)) / 60000);
-                duration = mins >= 60 ? `${Math.floor(mins / 60)}h ${mins % 60}m` : `${mins}m`;
+                const totalSeconds = Math.round((new Date(session.end_time) - new Date(session.start_time)) / 1000);
+                const mins = Math.floor(totalSeconds / 60);
+                const secs = totalSeconds % 60;
+                if (mins >= 60) {
+                    duration = `${Math.floor(mins / 60)}h ${mins % 60}m`;
+                } else if (mins > 0) {
+                    duration = `${mins}m`;
+                } else {
+                    duration = `${secs}s`;
+                }
             }
 
             // Date

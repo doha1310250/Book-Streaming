@@ -87,6 +87,35 @@ a {
     color: inherit;
 }
 
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 25, 47, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: var(--space-6);
+}
+
+.modal-overlay.hidden {
+    display: none !important;
+}
+
+.modal {
+    background: var(--color-white);
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
 button {
     font-family: inherit;
     cursor: pointer;

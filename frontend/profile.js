@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initMobileMenu();
     await loadUserInfo();
     await loadStats();
+    await loadStreakCalendar();
     await loadRecentSessions();
 
     document.getElementById('logout-btn').onclick = () => BookTracker.logout();
@@ -78,6 +79,52 @@ async function loadStats() {
         }
     } catch (error) {
         console.error('Failed to load stats:', error);
+    }
+}
+
+async function loadStreakCalendar() {
+    const container = document.getElementById('streak-calendar');
+    if (!container) return;
+
+    try {
+        // Get reading sessions for the past 84 days (12 weeks)
+        const sessions = await BookTracker.api.getMyReadingSessions({ limit: 100 });
+
+        // Create a map of dates to reading minutes
+        const readingByDate = {};
+        sessions.forEach(session => {
+            if (session.start_time) {
+                const date = new Date(session.start_time).toISOString().split('T')[0];
+                const duration = session.duration_min || 0;
+                readingByDate[date] = (readingByDate[date] || 0) + duration;
+            }
+        });
+
+        // Generate 84 days (12 weeks)
+        container.innerHTML = '';
+        const today = new Date();
+
+        for (let i = 83; i >= 0; i--) {
+            const date = new Date(today);
+            date.setDate(date.getDate() - i);
+            const dateStr = date.toISOString().split('T')[0];
+            const minutes = readingByDate[dateStr] || 0;
+
+            // Calculate level based on reading time
+            let level = 0;
+            if (minutes > 0 && minutes < 15) level = 1;
+            else if (minutes >= 15 && minutes < 30) level = 2;
+            else if (minutes >= 30 && minutes < 60) level = 3;
+            else if (minutes >= 60) level = 4;
+
+            const day = document.createElement('div');
+            day.className = `streak-day level-${level}`;
+            day.setAttribute('data-tooltip', `${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}: ${minutes > 0 ? minutes + ' min' : 'No reading'}`);
+            container.appendChild(day);
+        }
+    } catch (error) {
+        console.error('Failed to load streak calendar:', error);
+        container.innerHTML = '<div class="empty-state"><p>Could not load activity</p></div>';
     }
 }
 

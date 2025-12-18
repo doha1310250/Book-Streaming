@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initSearch();
     initModal();
     initMobileMenu();
+    initAddBookModal();
 
     await loadBooks();
     await loadMarkedBooks();
@@ -71,12 +72,32 @@ function initMobileMenu() {
 // ============================================
 async function loadBooks() {
     try {
-        showBookSkeleton();
+        // Show skeleton loaders while loading
+        showBookSkeletons();
+
         libraryBooks = await BookTracker.api.getBooks();
         renderBooks();
     } catch (error) {
         console.error('Failed to load books:', error);
         showEmptyState('Failed to load books.');
+    }
+}
+
+function showBookSkeletons() {
+    const grid = document.getElementById('book-grid');
+    grid.innerHTML = '';
+
+    for (let i = 0; i < 8; i++) {
+        const skeleton = document.createElement('div');
+        skeleton.className = 'book-card skeleton-book-card';
+        skeleton.innerHTML = `
+            <div class="book-cover skeleton skeleton-cover"></div>
+            <div class="book-info">
+                <div class="skeleton skeleton-text" style="width: 80%"></div>
+                <div class="skeleton skeleton-text-sm"></div>
+            </div>
+        `;
+        grid.appendChild(skeleton);
     }
 }
 
@@ -259,4 +280,69 @@ function openModal(book) {
     document.getElementById('modal-fav-btn').textContent = isFavorite ? 'Remove from Favorites' : 'Add to Favorites';
 
     modal.classList.remove('hidden');
+}
+
+// ============================================
+// Add Book Logic
+// ============================================
+function initAddBookModal() {
+    const modal = document.getElementById('add-book-modal');
+    const openBtn = document.getElementById('add-book-btn');
+    const closeBtn = document.getElementById('add-book-close');
+    const cancelBtn = document.getElementById('add-book-cancel');
+    const form = document.getElementById('add-book-form');
+
+    const closeModal = () => {
+        modal.classList.add('hidden');
+        form.reset();
+    };
+
+    openBtn.addEventListener('click', () => {
+        modal.classList.remove('hidden');
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
+
+    // Close on click outside
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+
+    // Handle Form Submit
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const submitBtn = document.getElementById('add-book-submit');
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Adding...';
+
+        try {
+            const formData = new FormData();
+            formData.append('title', document.getElementById('add-book-title').value);
+            formData.append('author_name', document.getElementById('add-book-author').value);
+
+            const date = document.getElementById('add-book-date').value;
+            if (date) formData.append('publish_date', date);
+
+            const coverFile = document.getElementById('add-book-cover').files[0];
+            if (coverFile) {
+                formData.append('cover_image', coverFile);
+            }
+
+            await BookTracker.api.createBook(formData);
+
+            BookTracker.showToast('Book added successfully!', 'success');
+            closeModal();
+            await loadBooks(); // Refresh list
+
+        } catch (error) {
+            console.error('Failed to add book:', error);
+            BookTracker.showToast(error.message || 'Failed to add book', 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
+    });
 }

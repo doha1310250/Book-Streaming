@@ -65,9 +65,11 @@
                         <div class="user-email" id="user-email"></div>
                     </div>
                 </div>
-                <button class="btn btn-ghost btn-block" id="logout-btn" style="margin-top: var(--space-4);">
-                    Sign Out
-                </button>
+                <div class="sidebar-actions">
+                    <button class="btn btn-ghost theme-toggle" onclick="BookTracker.toggleTheme()"
+                        title="Toggle Dark Mode">🌙</button>
+                    <button class="btn btn-ghost" id="logout-btn">Sign Out</button>
+                </div>
             </div>
         </aside>
 
@@ -79,6 +81,7 @@
                     <p class="content-header-subtitle">Browse and manage your reading collection</p>
                 </div>
                 <div class="header-actions">
+                    <button class="btn btn-primary" id="add-book-btn">+ Add Book</button>
                     <div class="search-box">
                         <input type="text" id="book-search" class="form-input" placeholder="Search books...">
                     </div>
@@ -134,6 +137,47 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Add Book Modal -->
+    <div class="modal-overlay hidden" id="add-book-modal">
+        <div class="modal-container" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Add New Book</h2>
+                <button class="modal-close" id="add-book-close">&times;</button>
+            </div>
+            <form id="add-book-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Book Title *</label>
+                        <input type="text" class="form-input" id="add-book-title" placeholder="Enter book title"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Author Name *</label>
+                        <input type="text" class="form-input" id="add-book-author" placeholder="Enter author name"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Publication Date</label>
+                        <input type="date" class="form-input" id="add-book-date">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cover Image</label>
+                        <input type="file" class="form-input" id="add-book-cover" accept="image/*">
+                        <small class="form-hint">Optional. JPG, PNG, or WebP</small>
+                    </div>
+                    <div class="info-note">
+                        <span>📘</span>
+                        <span>User-added books will be marked as unverified until reviewed.</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost" id="add-book-cancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="add-book-submit">Add Book</button>
+                </div>
+            </form>
         </div>
     </div>
 

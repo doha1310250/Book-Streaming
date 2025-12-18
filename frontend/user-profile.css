@@ -254,3 +254,148 @@
         font-size: var(--font-size-3xl);
     }
 }
+
+/* Streak Calendar */
+.streak-calendar-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    padding: var(--space-6);
+    margin-bottom: var(--space-6);
+}
+
+.streak-calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-6);
+}
+
+.streak-calendar-subtitle {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}
+
+.streak-calendar {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 3px;
+    margin-bottom: var(--space-4);
+    max-width: 600px;
+}
+
+.streak-day {
+    aspect-ratio: 1;
+    border-radius: 2px;
+    transition: transform var(--transition-fast);
+    cursor: pointer;
+    position: relative;
+}
+
+.streak-day:hover {
+    transform: scale(1.2);
+    z-index: 10;
+}
+
+.streak-day::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-size: var(--font-size-xs);
+    white-space: nowrap;
+    border-radius: 4px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-fast), visibility var(--transition-fast);
+    pointer-events: none;
+    margin-bottom: 4px;
+}
+
+.streak-day:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+.streak-day.level-0 {
+    background: var(--color-bg-dark);
+}
+
+.streak-day.level-1 {
+    background: #9be9a8;
+}
+
+.streak-day.level-2 {
+    background: #40c463;
+}
+
+.streak-day.level-3 {
+    background: #30a14e;
+}
+
+.streak-day.level-4 {
+    background: #216e39;
+}
+
+[data-theme="dark"] .streak-day.level-0 {
+    background: var(--color-bg-alt);
+}
+
+[data-theme="dark"] .streak-day.level-1 {
+    background: #0e4429;
+}
+
+[data-theme="dark"] .streak-day.level-2 {
+    background: #006d32;
+}
+
+[data-theme="dark"] .streak-day.level-3 {
+    background: #26a641;
+}
+
+[data-theme="dark"] .streak-day.level-4 {
+    background: #39d353;
+}
+
+.streak-legend {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-2);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}
+
+.legend-boxes {
+    display: flex;
+    gap: 2px;
+}
+
+.legend-box {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+.legend-box.level-0 {
+    background: var(--color-bg-dark);
+}
+
+.legend-box.level-1 {
+    background: #9be9a8;
+}
+
+.legend-box.level-2 {
+    background: #40c463;
+}
+
+.legend-box.level-3 {
+    background: #30a14e;
+}
+
+.legend-box.level-4 {
+    background: #216e39;
+}

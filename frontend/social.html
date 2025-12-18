@@ -57,9 +57,11 @@
                         <div class="user-email" id="user-email"></div>
                     </div>
                 </div>
-                <button class="btn btn-ghost btn-block" id="logout-btn" style="margin-top: var(--space-4);">
-                    Sign Out
-                </button>
+                <div class="sidebar-actions">
+                    <button class="btn btn-ghost theme-toggle" onclick="BookTracker.toggleTheme()"
+                        title="Toggle Dark Mode">🌙</button>
+                    <button class="btn btn-ghost" id="logout-btn">Sign Out</button>
+                </div>
             </div>
         </aside>
 

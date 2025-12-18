@@ -309,11 +309,50 @@ window.BookTracker = {
     getUser,
     logout,
     requireAuth,
-    getBookCoverUrl
+    getBookCoverUrl,
+    toggleTheme,
+    getTheme,
+    initTheme
 };
 
-// Check API health on load
+// ============================================
+// Theme Management (Dark Mode)
+// ============================================
+function getTheme() {
+    return localStorage.getItem('book_tracker_theme') || 'light';
+}
+
+function setTheme(theme) {
+    localStorage.setItem('book_tracker_theme', theme);
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeToggle(theme);
+}
+
+function toggleTheme() {
+    const current = getTheme();
+    const newTheme = current === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    return newTheme;
+}
+
+function updateThemeToggle(theme) {
+    const toggles = document.querySelectorAll('.theme-toggle');
+    toggles.forEach(toggle => {
+        toggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+        toggle.title = theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+    });
+}
+
+function initTheme() {
+    const theme = getTheme();
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeToggle(theme);
+}
+
+// Check API health on load and init theme
 document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+
     APIService.healthCheck()
         .then(() => console.log('✅ API connected'))
         .catch(() => console.warn('⚠️ API not available'));

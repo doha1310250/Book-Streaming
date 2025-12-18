@@ -60,6 +60,68 @@
     --shadow-sm: none;
 }
 
+/* Dark Mode */
+[data-theme="dark"] {
+    --color-primary: #0a192f;
+    --color-primary-light: #1e3a5f;
+    --color-accent: #3b82f6;
+    --color-accent-hover: #60a5fa;
+    --color-success: #34d399;
+    --color-warning: #fbbf24;
+    --color-error: #f87171;
+    --color-bg: #0f172a;
+    --color-bg-alt: #1e293b;
+    --color-bg-dark: #0f172a;
+    --color-text: #f1f5f9;
+    --color-text-muted: #94a3b8;
+    --color-text-light: #64748b;
+    --color-border: #334155;
+    --color-white: #1e293b;
+}
+
+/* Skeleton Loaders */
+.skeleton {
+    background: linear-gradient(90deg, var(--color-bg-alt) 25%, var(--color-bg-dark) 50%, var(--color-bg-alt) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+.skeleton-text {
+    height: 1em;
+    margin-bottom: var(--space-2);
+}
+
+.skeleton-text-sm {
+    height: 0.75em;
+    width: 60%;
+}
+
+.skeleton-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 0;
+}
+
+.skeleton-card {
+    height: 200px;
+}
+
+.skeleton-cover {
+    width: 80px;
+    height: 120px;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
 /* Reset */
 *,
 *::before,
@@ -519,6 +581,22 @@ textarea {
 .user-email {
     font-size: var(--font-size-xs);
     color: var(--color-text-light);
+}
+
+.sidebar-actions {
+    display: flex;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+}
+
+.sidebar-actions .btn {
+    flex: 1;
+}
+
+.sidebar-actions .theme-toggle {
+    flex: 0;
+    width: 44px;
+    font-size: var(--font-size-lg);
 }
 
 /* Main Content */

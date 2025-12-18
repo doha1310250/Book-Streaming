@@ -4,76 +4,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookTracker | Your Cozy Reading Corner</title>
+    <title>BookTracker | Enterprise Reading Analytics</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="/static/landing.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="landing.css">
 </head>
 
 <body>
-    <nav class="navbar">
+    <!-- Sticky Navbar -->
+    <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="nav-logo">
-                <span class="logo-icon">📖</span>
+            <a href="/" class="nav-logo">
+                <span class="logo-mark">B</span>
                 <span class="logo-text">BookTracker</span>
+            </a>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#metrics" class="nav-link">Results</a>
+                <a href="#services" class="nav-link">Services</a>
+                <a href="login.html" class="nav-link">Sign In</a>
+                <a href="login.html" class="nav-btn">Get Started</a>
             </div>
-            <div class="nav-actions">
-                <button class="btn btn-ghost" onclick="location.href='login.html'">Login</button>
-                <button class="btn btn-primary" onclick="location.href='login.html'">Sign Up</button>
-            </div>
+            <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="#features" class="mobile-link">Features</a>
+        <a href="#metrics" class="mobile-link">Results</a>
+        <a href="#services" class="mobile-link">Services</a>
+        <a href="login.html" class="mobile-link">Sign In</a>
+        <a href="login.html" class="nav-btn">Get Started</a>
+    </div>
+
+    <!-- Hero Section -->
     <header class="hero">
         <div class="hero-content">
-            <h1 class="hero-title">Track your chapters, <br><span class="text-highlight">build a habit.</span></h1>
-            <p class="hero-subtitle">The cozy, distraction-free space to log your reading sessions and manage your
-                personal library.</p>
-            <div class="hero-btns">
-                <button class="btn btn-primary btn-lg" onclick="location.href='login.html'">Start Reading Free</button>
+            <div class="hero-badge">Enterprise Reading Platform</div>
+            <h1 class="hero-title">
+                Build reading habits<br>
+                <span class="hero-accent">that scale.</span>
+            </h1>
+            <p class="hero-subtitle">
+                The enterprise-grade platform for tracking reading progress,
+                building streaks, and cultivating a culture of continuous learning.
+            </p>
+            <div class="hero-actions">
+                <a href="login.html" class="btn-primary">Start Free Trial</a>
+                <a href="#features" class="btn-secondary">Learn More</a>
             </div>
         </div>
         <div class="hero-visual">
-            <div class="floating-card">
-                <div class="timer-preview">
-                    <span class="timer-val">24:15</span>
-                    <p>Active Session</p>
+            <div class="hero-image" id="hero-image">
+                <div class="hero-card card-1">
+                    <span class="card-icon">📚</span>
+                    <span class="card-stat">2,847</span>
+                    <span class="card-label">Books Tracked</span>
+                </div>
+                <div class="hero-card card-2">
+                    <span class="card-icon">🔥</span>
+                    <span class="card-stat">42</span>
+                    <span class="card-label">Day Streak</span>
+                </div>
+                <div class="hero-card card-3">
+                    <span class="card-icon">⏱️</span>
+                    <span class="card-stat">156h</span>
+                    <span class="card-label">Time Read</span>
                 </div>
             </div>
         </div>
     </header>
 
-    <section class="features">
+    <!-- Key Metrics Section -->
+    <section class="metrics" id="metrics">
         <div class="section-container">
-            <div class="feature-card">
-                <div class="feat-icon">⏳</div>
-                <h3>Focus Timer</h3>
-                <p>Stay immersed with our dedicated reading mode.</p>
+            <div class="metrics-header">
+                <span class="section-label">By The Numbers</span>
+                <h2 class="section-title">Trusted by readers worldwide</h2>
             </div>
-            <div class="feature-card">
-                <div class="feat-icon">📈</div>
-                <h3>Progress Stats</h3>
-                <p>Visualize your reading habits and daily streaks.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feat-icon">📚</div>
-                <h3>Smart Library</h3>
-                <p>Organize your collection into custom categories.</p>
+            <div class="metrics-grid">
+                <div class="metric-item">
+                    <span class="metric-value" data-target="50000000">0</span>
+                    <span class="metric-suffix">+</span>
+                    <span class="metric-label">Active Users</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-value" data-target="2400000000" data-prefix="$">0</span>
+                    <span class="metric-suffix"></span>
+                    <span class="metric-label">Books Tracked</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-value" data-target="99">0</span>
+                    <span class="metric-suffix">%</span>
+                    <span class="metric-label">Uptime SLA</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-value" data-target="180">0</span>
+                    <span class="metric-suffix">+</span>
+                    <span class="metric-label">Countries</span>
+                </div>
             </div>
         </div>
     </section>
 
-    <footer class="footer-simple">
-        <div class="footer-content">
-            <div class="footer-brand"><span class="logo-text">BookTracker</span></div>
-            <div class="footer-links">
-                <a href="#">Privacy</a><a href="#">Terms</a>
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="section-container">
+            <div class="features-header">
+                <span class="section-label">Platform Capabilities</span>
+                <h2 class="section-title">Everything you need to read smarter</h2>
+            </div>
+            <div class="bento-grid">
+                <div class="bento-card bento-large">
+                    <div class="bento-icon">⏳</div>
+                    <h3 class="bento-title">Focus Timer</h3>
+                    <p class="bento-desc">Dedicated reading sessions with progress tracking and distraction-free mode.
+                    </p>
+                </div>
+                <div class="bento-card">
+                    <div class="bento-icon">📊</div>
+                    <h3 class="bento-title">Analytics</h3>
+                    <p class="bento-desc">Deep insights into your reading patterns and habits.</p>
+                </div>
+                <div class="bento-card">
+                    <div class="bento-icon">🔥</div>
+                    <h3 class="bento-title">Streaks</h3>
+                    <p class="bento-desc">Build consistent habits with daily streak tracking.</p>
+                </div>
+                <div class="bento-card">
+                    <div class="bento-icon">📚</div>
+                    <h3 class="bento-title">Library</h3>
+                    <p class="bento-desc">Organize your collection with smart categories.</p>
+                </div>
+                <div class="bento-card bento-wide">
+                    <div class="bento-icon">👥</div>
+                    <h3 class="bento-title">Social Reading</h3>
+                    <p class="bento-desc">Follow friends, share progress, and discover new books through your network.
+                    </p>
+                </div>
+                <div class="bento-card">
+                    <div class="bento-icon">⭐</div>
+                    <h3 class="bento-title">Reviews</h3>
+                    <p class="bento-desc">Rate and review books to help others discover great reads.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="section-container">
+            <div class="cta-content">
+                <h2 class="cta-title">Ready to transform your reading?</h2>
+                <p class="cta-subtitle">Join millions of readers building better habits today.</p>
+                <a href="login.html" class="btn-primary btn-large">Start Reading Free</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="section-container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="logo-mark">B</span>
+                    <span class="logo-text">BookTracker</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#">Privacy</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Contact</a>
+                </div>
+                <div class="footer-copy">
+                    © 2024 BookTracker. All rights reserved.
+                </div>
             </div>
         </div>
     </footer>
+
+    <script src="landing.js"></script>
 </body>
 
 </html>

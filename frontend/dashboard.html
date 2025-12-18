@@ -4,84 +4,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Library | BookTracker</title>
+    <title>Library | BookTracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="dashboard.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
-        rel="stylesheet">
 </head>
 
 <body>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-logo">
+                    <span class="logo-mark">B</span>
+                    <span class="logo-text">BookTracker</span>
+                </a>
+            </div>
 
-    <div class="dashboard-layout">
-        <aside class="sidebar">
-            <div class="sidebar-brand"><span class="logo-icon">📖</span><span class="logo-text">BookTracker</span></div>
             <nav class="sidebar-nav">
-                <a href="#" class="nav-item active" data-filter="all"><span>📚</span> All Books</a>
-                <a href="#" class="nav-item" data-filter="verified"><span>🛡️</span> Verified</a>
-                <a href="#" class="nav-item" data-filter="favorites"><span>❤️</span> Favorites</a>
-                <a href="profile.html" class="nav-item"><span>👤</span> Profile</a>
-                <div class="nav-divider"></div>
-                <a href="timer.html" class="nav-item highlight"><span>⏳</span> Start Session</a>
+                <div class="nav-section">
+                    <div class="nav-section-title">Library</div>
+                    <a href="#" class="nav-item active" data-filter="all">
+                        <span class="nav-item-icon">📚</span>
+                        All Books
+                    </a>
+                    <a href="#" class="nav-item" data-filter="verified">
+                        <span class="nav-item-icon">✓</span>
+                        Verified
+                    </a>
+                    <a href="#" class="nav-item" data-filter="favorites">
+                        <span class="nav-item-icon">♥</span>
+                        Favorites
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Activity</div>
+                    <a href="timer.html" class="nav-item">
+                        <span class="nav-item-icon">⏱</span>
+                        Start Reading
+                    </a>
+                    <a href="profile.html" class="nav-item">
+                        <span class="nav-item-icon">📊</span>
+                        Statistics
+                    </a>
+                </div>
             </nav>
+
             <div class="sidebar-footer">
-                <button class="btn-logout" onclick="location.href='index.html'">Log Out</button>
+                <div class="sidebar-user">
+                    <div class="user-avatar" id="user-avatar">?</div>
+                    <div class="user-info">
+                        <div class="user-name" id="user-name">Loading...</div>
+                        <div class="user-email" id="user-email"></div>
+                    </div>
+                </div>
+                <button class="btn btn-ghost btn-block" id="logout-btn" style="margin-top: var(--space-4);">
+                    Sign Out
+                </button>
             </div>
         </aside>
 
+        <!-- Main Content -->
         <main class="main-content">
             <header class="content-header">
-                <div class="welcome-text">
-                    <h1>Happy Reading, <span id="user-name">Alex</span>!</h1>
-                    <p>Track your progress and explore your library.</p>
+                <div>
+                    <h1 class="content-header-title" id="page-title">All Books</h1>
+                    <p class="content-header-subtitle">Browse and manage your reading collection</p>
                 </div>
-                <div class="header-stats">
-                    <div class="mini-stat">
-                        <span class="stat-label">Streak</span>
-                        <span class="stat-value">🔥 12 Days</span>
+                <div class="header-actions">
+                    <div class="search-box">
+                        <input type="text" id="book-search" class="form-input" placeholder="Search books...">
+                    </div>
+                    <div class="streak-badge" id="streak-badge">
+                        <span class="streak-icon">🔥</span>
+                        <span class="streak-value" id="streak-value">0</span>
+                        <span class="streak-label">Day Streak</span>
                     </div>
                 </div>
             </header>
 
-            <section class="library-section">
-                <div class="section-header">
-                    <h2 id="current-category">All Books</h2>
-                    <div class="search-box">
-                        <input type="text" id="book-search" placeholder="Search your library...">
+            <div class="content-body">
+                <!-- Stats Row -->
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <span class="stat-value" id="stat-books">0</span>
+                        <span class="stat-label">Total Books</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="stat-favorites">0</span>
+                        <span class="stat-label">Favorites</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="stat-sessions">0</span>
+                        <span class="stat-label">Sessions</span>
                     </div>
                 </div>
 
+                <!-- Book Grid -->
                 <div class="book-grid" id="book-grid">
+                    <!-- Books will be rendered here -->
                 </div>
-            </section>
+            </div>
         </main>
     </div>
 
-    <div id="book-modal" class="modal hidden">
-        <div class="modal-content book-details-card">
-            <button class="close-modal" id="close-modal">✕</button>
-            <div class="modal-body">
-                <div class="book-cover-large">
-                    <img src="" id="modal-cover" alt="Book Cover">
+    <!-- Book Modal -->
+    <div class="modal-overlay hidden" id="book-modal">
+        <div class="modal">
+            <button class="modal-close" id="modal-close">✕</button>
+            <div class="modal-content">
+                <div class="modal-cover">
+                    <img src="" alt="Book Cover" id="modal-cover">
                 </div>
-                <div class="book-info-expanded">
+                <div class="modal-info">
                     <span class="badge" id="modal-badge">Verified</span>
-                    <h2 id="modal-title">Book Title</h2>
-                    <p class="author" id="modal-author">Author Name</p>
-                    <div class="book-meta">
-                        <span><strong>Genre:</strong> Fiction</span>
-                    </div>
-                    <p class="description" id="modal-desc">
-                        Dive back into your story. Your progress is saved automatically.
-                    </p>
+                    <h2 class="modal-title" id="modal-title">Book Title</h2>
+                    <p class="modal-author" id="modal-author">Author Name</p>
+                    <p class="modal-desc" id="modal-desc">Book description goes here...</p>
                     <div class="modal-actions">
-                        <button class="btn-main" onclick="location.href='timer.html'">Continue Reading</button>
-                        <button class="btn-outline" id="modal-fav-btn">Add to Favorites</button>
+                        <button class="btn btn-primary" id="modal-read-btn">Start Reading</button>
+                        <button class="btn btn-secondary" id="modal-fav-btn">Add to Favorites</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-btn" id="mobile-menu-btn">☰</button>
 
     <script src="app.js"></script>
     <script src="dashboard.js"></script>

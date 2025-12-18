@@ -4,87 +4,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reading Room | BookTracker</title>
+    <title>Reading Session | BookTracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="timer.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Inter:wght@400;500;600&display=swap"
-        rel="stylesheet">
 </head>
 
 <body>
+    <div class="timer-layout">
+        <!-- Header -->
+        <header class="timer-header">
+            <a href="dashboard.html" class="back-link">
+                <span>←</span>
+                <span>Back to Library</span>
+            </a>
+            <div class="header-brand">
+                <span class="logo-mark">B</span>
+            </div>
+        </header>
 
-    <div class="app-wrapper">
-        <main class="focus-container">
-            <section class="book-info">
-                <div class="book-artwork">
-                    <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=1000&auto=format&fit=crop"
-                        alt="Current Book">
-                </div>
-                <div class="book-details">
-                    <h1>The Midnight Library</h1>
-                    <p>Matt Haig</p>
-                </div>
-            </section>
-
-            <section class="timer-section">
-                <div class="timer-display">
-                    <svg class="progress-ring" width="280" height="280">
-                        <circle class="progress-ring__circle-bg" stroke="#eee3e1" stroke-width="8" fill="transparent"
-                            r="130" cx="140" cy="140" />
-                        <circle id="progress-bar" class="progress-ring__circle" stroke="#a63d40" stroke-width="8"
-                            fill="transparent" r="130" cx="140" cy="140" />
-                    </svg>
-                    <div class="time-overlay">
-                        <span id="display">00:00:00</span>
-                        <label>Elapsed Time</label>
+        <!-- Timer Content -->
+        <main class="timer-main">
+            <div class="timer-container">
+                <!-- Book Info -->
+                <div class="current-book">
+                    <div class="book-cover-small">
+                        <img src="" alt="Book Cover" id="book-cover">
+                    </div>
+                    <div class="book-details">
+                        <span class="section-label">Currently Reading</span>
+                        <h1 class="book-title" id="book-title">Select a book to start</h1>
+                        <p class="book-author" id="book-author">from your library</p>
                     </div>
                 </div>
-            </section>
 
-            <section class="controls-card">
-                <div class="goal-text">Daily Reading Goal: 30 mins</div>
-                <div class="action-buttons">
-                    <button id="start-btn" class="btn-main">Start Session</button>
-                    <button id="finish-btn" class="btn-outline">Finish Reading</button>
+                <!-- Timer Display -->
+                <div class="timer-display">
+                    <svg class="timer-ring" viewBox="0 0 300 300">
+                        <circle class="timer-ring-bg" cx="150" cy="150" r="140" />
+                        <circle class="timer-ring-progress" id="timer-progress" cx="150" cy="150" r="140" />
+                    </svg>
+                    <div class="timer-time">
+                        <span class="time-value" id="timer-display">00:00:00</span>
+                        <span class="time-label">Elapsed Time</span>
+                    </div>
                 </div>
-            </section>
+
+                <!-- Goal Info -->
+                <div class="goal-info">
+                    <span class="goal-label">Daily Goal</span>
+                    <span class="goal-value">30 min</span>
+                </div>
+
+                <!-- Controls -->
+                <div class="timer-controls">
+                    <button class="btn btn-primary btn-lg" id="start-btn">Start Session</button>
+                    <button class="btn btn-secondary btn-lg" id="finish-btn">End Session</button>
+                </div>
+            </div>
         </main>
     </div>
 
-    <div id="log-modal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="success-icon">✨</div>
-                <h2>Session Complete!</h2>
-                <p>You’re doing great. Keep the momentum going!</p>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <span id="summary-time" class="stat-value">0m</span>
-                    <span class="stat-label">Time Read</span>
+    <!-- Session Complete Modal -->
+    <div class="modal-overlay hidden" id="complete-modal">
+        <div class="modal">
+            <div class="modal-content" style="display: block; padding: var(--space-10);">
+                <div class="complete-header">
+                    <span class="complete-icon">✓</span>
+                    <h2 class="complete-title">Session Complete</h2>
+                    <p class="complete-subtitle">Great work! Keep the momentum going.</p>
                 </div>
-                <div class="stat-card">
-                    <span class="stat-value">4</span>
-                    <span class="stat-label">Day Streak</span>
-                </div>
-            </div>
 
-            <div class="log-form">
-                <div class="input-wrapper">
-                    <label for="end-page">Where did you leave off?</label>
-                    <div class="input-field-container">
-                        <input type="number" id="end-page" placeholder="Page number...">
-                        <span class="input-suffix">pg</span>
+                <div class="complete-stats">
+                    <div class="complete-stat">
+                        <span class="stat-value" id="summary-time">0m</span>
+                        <span class="stat-label">Time Read</span>
+                    </div>
+                    <div class="complete-stat">
+                        <span class="stat-value" id="summary-streak">0</span>
+                        <span class="stat-label">Day Streak</span>
                     </div>
                 </div>
 
-                <div class="modal-actions">
-                    <button class="btn-main" id="save-log-btn">Save to Library</button>
+                <div class="form-group">
+                    <label class="form-label" for="end-page">Page Number (Optional)</label>
+                    <input type="number" id="end-page" class="form-input" placeholder="Where did you stop?">
                 </div>
+
+                <button class="btn btn-primary btn-block btn-lg" id="save-btn">Save & Continue</button>
             </div>
         </div>
     </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
 
     <script src="app.js"></script>
     <script src="timer.js"></script>

@@ -4,86 +4,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile | BookTracker</title>
-    <link rel="stylesheet" href="dashboard.css">
+    <title>Statistics | BookTracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="profile.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
-        rel="stylesheet">
 </head>
 
 <body>
-    <div class="dashboard-layout">
-        <aside class="sidebar">
-            <div class="sidebar-brand"><span class="logo-icon">📖</span><span class="logo-text">BookTracker</span></div>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-logo">
+                    <span class="logo-mark">B</span>
+                    <span class="logo-text">BookTracker</span>
+                </a>
+            </div>
+
             <nav class="sidebar-nav">
-                <a href="dashboard.html" class="nav-item"><span>📚</span> Library</a>
-                <a href="profile.html" class="nav-item active"><span>👤</span> Profile</a>
-                <div class="nav-divider"></div>
-                <a href="timer.html" class="nav-item highlight"><span>⏳</span> Start Session</a>
+                <div class="nav-section">
+                    <div class="nav-section-title">Library</div>
+                    <a href="dashboard.html" class="nav-item">
+                        <span class="nav-item-icon">📚</span>
+                        All Books
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Activity</div>
+                    <a href="timer.html" class="nav-item">
+                        <span class="nav-item-icon">⏱</span>
+                        Start Reading
+                    </a>
+                    <a href="profile.html" class="nav-item active">
+                        <span class="nav-item-icon">📊</span>
+                        Statistics
+                    </a>
+                </div>
             </nav>
+
             <div class="sidebar-footer">
-                <button class="btn-logout" id="logout-btn">Log Out</button>
+                <div class="sidebar-user">
+                    <div class="user-avatar" id="user-avatar">?</div>
+                    <div class="user-info">
+                        <div class="user-name" id="sidebar-user-name">Loading...</div>
+                        <div class="user-email" id="sidebar-user-email"></div>
+                    </div>
+                </div>
+                <button class="btn btn-ghost btn-block" id="logout-btn" style="margin-top: var(--space-4);">
+                    Sign Out
+                </button>
             </div>
         </aside>
 
+        <!-- Main Content -->
         <main class="main-content">
             <header class="content-header">
-                <div class="welcome-text">
-                    <h1>Your Profile</h1>
-                    <p>View your reading stats and manage your account.</p>
+                <div>
+                    <h1 class="content-header-title">Statistics</h1>
+                    <p class="content-header-subtitle">Track your reading progress and achievements</p>
                 </div>
             </header>
 
-            <!-- Stats Section -->
-            <section class="stats-section">
-                <h2>📊 Reading Statistics</h2>
+            <div class="content-body">
+                <!-- Stats Grid -->
                 <div class="stats-grid">
-                    <div class="stat-card">
+                    <div class="stat-card stat-primary">
                         <span class="stat-icon">🔥</span>
                         <span class="stat-value" id="stat-streak">0</span>
                         <span class="stat-label">Day Streak</span>
                     </div>
                     <div class="stat-card">
-                        <span class="stat-icon">📚</span>
                         <span class="stat-value" id="stat-books">0</span>
                         <span class="stat-label">Books Read</span>
                     </div>
                     <div class="stat-card">
-                        <span class="stat-icon">⏱️</span>
                         <span class="stat-value" id="stat-hours">0h</span>
                         <span class="stat-label">Total Time</span>
                     </div>
                     <div class="stat-card">
-                        <span class="stat-icon">📝</span>
                         <span class="stat-value" id="stat-sessions">0</span>
                         <span class="stat-label">Sessions</span>
                     </div>
                 </div>
-            </section>
 
-            <!-- User Info Section -->
-            <section class="user-section">
-                <h2>👤 Account Info</h2>
-                <div class="user-card">
-                    <div class="user-avatar" id="user-avatar">?</div>
-                    <div class="user-details">
-                        <h3 id="user-name">Loading...</h3>
-                        <p id="user-email">Loading...</p>
-                        <p class="user-since">Member since <span id="user-since">-</span></p>
+                <!-- Profile Card -->
+                <div class="profile-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Account</h2>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-avatar" id="profile-avatar">?</div>
+                        <div class="profile-details">
+                            <h3 class="profile-name" id="profile-name">Loading...</h3>
+                            <p class="profile-email" id="profile-email">Loading...</p>
+                            <p class="profile-joined">Member since <span id="profile-joined">-</span></p>
+                        </div>
                     </div>
                 </div>
-            </section>
 
-            <!-- Recent Sessions -->
-            <section class="sessions-section">
-                <h2>📖 Recent Reading Sessions</h2>
-                <div class="sessions-list" id="sessions-list">
-                    <div class="empty-state">Loading sessions...</div>
+                <!-- Recent Sessions -->
+                <div class="sessions-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Recent Sessions</h2>
+                    </div>
+                    <div class="sessions-list" id="sessions-list">
+                        <div class="empty-state">
+                            <p>Loading sessions...</p>
+                        </div>
+                    </div>
                 </div>
-            </section>
+            </div>
         </main>
     </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-btn" id="mobile-menu-btn">☰</button>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
 
     <script src="app.js"></script>
     <script src="profile.js"></script>

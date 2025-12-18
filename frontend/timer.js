@@ -1,6 +1,6 @@
 /**
  * BookTracker - Timer Page JavaScript
- * Reading session timer with API integration
+ * Fortune 500 Edition
  */
 
 // State
@@ -10,78 +10,58 @@ let currentSession = null;
 let currentBook = null;
 const dailyGoalMinutes = 30;
 
-// DOM Elements
-const display = document.getElementById('display');
-const progressBar = document.getElementById('progress-bar');
+// Elements
+const timerDisplay = document.getElementById('timer-display');
+const timerProgress = document.getElementById('timer-progress');
 const startBtn = document.getElementById('start-btn');
 const finishBtn = document.getElementById('finish-btn');
-const logModal = document.getElementById('log-modal');
-const saveLogBtn = document.getElementById('save-log-btn');
-const summaryTime = document.getElementById('summary-time');
+const completeModal = document.getElementById('complete-modal');
+const saveBtn = document.getElementById('save-btn');
 
-// Progress Circle Calculation
-const circumference = 130 * 2 * Math.PI;
-progressBar.style.strokeDasharray = `${circumference} ${circumference}`;
-progressBar.style.strokeDashoffset = circumference;
+// Timer ring circumference
+const circumference = 140 * 2 * Math.PI;
+timerProgress.style.strokeDasharray = circumference;
+timerProgress.style.strokeDashoffset = circumference;
 
 // ============================================
-// Initialize Timer Page
+// Initialize
 // ============================================
-document.addEventListener('DOMContentLoaded', async () => {
-    // Check auth
+document.addEventListener('DOMContentLoaded', () => {
     if (!BookTracker.requireAuth()) return;
 
-    // Load current book from localStorage
+    loadBook();
+    loadUserInfo();
+    initControls();
+
+    // Resume session if exists
+    const savedSession = localStorage.getItem('book_tracker_session');
+    if (savedSession) {
+        const session = JSON.parse(savedSession);
+        if (session.startTime) {
+            seconds = Math.floor((Date.now() - session.startTime) / 1000);
+            currentSession = session;
+            updateDisplay();
+            startTimer();
+            startBtn.textContent = 'Session Active';
+            startBtn.disabled = true;
+        }
+    }
+});
+
+function loadBook() {
     const bookData = localStorage.getItem('book_tracker_current_book');
     if (bookData) {
         currentBook = JSON.parse(bookData);
-        updateBookDisplay(currentBook);
+        document.getElementById('book-title').textContent = currentBook.title;
+        document.getElementById('book-author').textContent = currentBook.author_name;
+        document.getElementById('book-cover').src = BookTracker.getBookCoverUrl(currentBook.cover_url);
     }
-
-    // Check for existing active session
-    const sessionData = localStorage.getItem('book_tracker_session');
-    if (sessionData) {
-        const session = JSON.parse(sessionData);
-        // Calculate elapsed time if session was started
-        if (session.startTime) {
-            const elapsed = Math.floor((Date.now() - session.startTime) / 1000);
-            seconds = elapsed;
-            currentSession = session;
-            display.textContent = formatTime(seconds);
-            updateProgress();
-
-            // Resume timer
-            startTimer();
-            startBtn.disabled = true;
-            startBtn.textContent = 'Session in Progress...';
-            startBtn.style.opacity = '0.7';
-        }
-    }
-
-    // Load user stats
-    loadUserStats();
-});
-
-function updateBookDisplay(book) {
-    const coverUrl = BookTracker.getBookCoverUrl(book.cover_url);
-
-    document.querySelector('.book-info h1').textContent = book.title;
-    document.querySelector('.book-info p').textContent = book.author_name;
-    document.querySelector('.book-artwork img').src = coverUrl;
 }
 
-async function loadUserStats() {
-    try {
-        const user = BookTracker.getUser();
-        if (user) {
-            // Update streak in modal
-            const streakEl = document.querySelector('.stats-grid .stat-card:nth-child(2) .stat-value');
-            if (streakEl) {
-                streakEl.textContent = user.current_streak || 0;
-            }
-        }
-    } catch (error) {
-        console.error('Failed to load user stats:', error);
+function loadUserInfo() {
+    const user = BookTracker.getUser();
+    if (user) {
+        document.getElementById('summary-streak').textContent = user.current_streak || 0;
     }
 }
 
@@ -95,11 +75,14 @@ function formatTime(s) {
     return `${h}:${m}:${sec}`;
 }
 
-function updateProgress() {
+function updateDisplay() {
+    timerDisplay.textContent = formatTime(seconds);
+
+    // Update progress ring
     const totalGoalSeconds = dailyGoalMinutes * 60;
     const progress = Math.min(seconds / totalGoalSeconds, 1);
     const offset = circumference - (progress * circumference);
-    progressBar.style.strokeDashoffset = offset;
+    timerProgress.style.strokeDashoffset = offset;
 }
 
 function startTimer() {
@@ -107,150 +90,88 @@ function startTimer() {
 
     timerId = setInterval(() => {
         seconds++;
-        display.textContent = formatTime(seconds);
-        updateProgress();
+        updateDisplay();
     }, 1000);
 }
 
-// ============================================
-// Start Session
-// ============================================
-startBtn.addEventListener('click', async () => {
-    if (timerId) return;
-
-    if (!currentBook) {
-        BookTracker.showToast('Please select a book first', 'error');
-        setTimeout(() => {
-            window.location.href = 'dashboard.html';
-        }, 1000);
-        return;
-    }
-
-    try {
-        startBtn.disabled = true;
-        startBtn.textContent = 'Starting...';
-
-        // Create session via API
-        const response = await BookTracker.api.startReadingSession(currentBook.book_id);
-        currentSession = {
-            id: response.id,
-            bookId: currentBook.book_id,
-            startTime: Date.now()
-        };
-
-        // Save session to localStorage for persistence
-        localStorage.setItem('book_tracker_session', JSON.stringify(currentSession));
-
-        // Start the timer
-        startTimer();
-
-        startBtn.textContent = 'Session in Progress...';
-        startBtn.style.opacity = '0.7';
-        startBtn.style.cursor = 'default';
-
-        BookTracker.showToast('Reading session started! 📖', 'success');
-
-    } catch (error) {
-        console.error('Failed to start session:', error);
-        BookTracker.showToast(error.message || 'Failed to start session', 'error');
-        startBtn.disabled = false;
-        startBtn.textContent = 'Start Session';
-    }
-});
-
-// ============================================
-// Finish Session
-// ============================================
-finishBtn.addEventListener('click', async () => {
-    // Stop timer
+function stopTimer() {
     if (timerId) {
         clearInterval(timerId);
         timerId = null;
     }
-
-    const minsRead = Math.floor(seconds / 60);
-    summaryTime.textContent = minsRead + 'm';
-
-    // Show modal
-    logModal.classList.remove('hidden');
-});
+}
 
 // ============================================
-// Save Log (End Session)
+// Controls
 // ============================================
-saveLogBtn.addEventListener('click', async () => {
-    const pageNum = document.getElementById('end-page').value;
+function initControls() {
+    // Start button
+    startBtn.addEventListener('click', async () => {
+        if (timerId) return;
 
-    try {
-        saveLogBtn.disabled = true;
-        saveLogBtn.textContent = 'Saving...';
-
-        // End session via API
-        if (currentSession?.id) {
-            await BookTracker.api.endReadingSession(currentSession.id);
+        if (!currentBook) {
+            BookTracker.showToast('Please select a book first', 'error');
+            setTimeout(() => window.location.href = 'dashboard.html', 1000);
+            return;
         }
 
-        // Clear session from localStorage
-        localStorage.removeItem('book_tracker_session');
+        startBtn.disabled = true;
+        startBtn.textContent = 'Starting...';
 
-        const minsRead = Math.floor(seconds / 60);
-        BookTracker.showToast(`Great session! You read for ${minsRead} minutes 🎉`, 'success');
+        try {
+            const response = await BookTracker.api.startReadingSession(currentBook.book_id);
+            currentSession = {
+                id: response.id,
+                bookId: currentBook.book_id,
+                startTime: Date.now()
+            };
 
-        setTimeout(() => {
-            window.location.href = 'dashboard.html';
-        }, 1000);
-
-    } catch (error) {
-        console.error('Failed to save session:', error);
-        BookTracker.showToast(error.message || 'Failed to save session', 'error');
-        saveLogBtn.disabled = false;
-        saveLogBtn.textContent = 'Save to Library';
-    }
-});
-
-// Close modal if clicking outside
-logModal.addEventListener('click', (e) => {
-    if (e.target === logModal) {
-        logModal.classList.add('hidden');
-        // Resume timer if not finished
-        if (seconds > 0 && !currentSession?.ended) {
+            localStorage.setItem('book_tracker_session', JSON.stringify(currentSession));
             startTimer();
-        }
-    }
-});
 
-// Add toast container styles if not present
-if (!document.querySelector('.toast-styles')) {
-    const style = document.createElement('style');
-    style.className = 'toast-styles';
-    style.textContent = `
-        .toast-container {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            startBtn.textContent = 'Session Active';
+            BookTracker.showToast('Session started!', 'success');
+
+        } catch (error) {
+            console.error('Failed to start session:', error);
+            BookTracker.showToast(error.message || 'Failed to start', 'error');
+            startBtn.disabled = false;
+            startBtn.textContent = 'Start Session';
         }
-        .toast {
-            background: white;
-            padding: 16px 20px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            animation: slideIn 0.3s ease;
-            border-left: 4px solid #a63d40;
+    });
+
+    // Finish button
+    finishBtn.addEventListener('click', () => {
+        stopTimer();
+        const mins = Math.floor(seconds / 60);
+        document.getElementById('summary-time').textContent = mins + 'm';
+        completeModal.classList.remove('hidden');
+    });
+
+    // Save button
+    saveBtn.addEventListener('click', async () => {
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving...';
+
+        try {
+            if (currentSession?.id) {
+                await BookTracker.api.endReadingSession(currentSession.id);
+            }
+
+            localStorage.removeItem('book_tracker_session');
+
+            const mins = Math.floor(seconds / 60);
+            BookTracker.showToast(`Great session! ${mins} minutes read.`, 'success');
+
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1000);
+
+        } catch (error) {
+            console.error('Failed to save:', error);
+            BookTracker.showToast(error.message || 'Failed to save', 'error');
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Save & Continue';
         }
-        .toast.success { border-left-color: #10b981; }
-        .toast.error { border-left-color: #ef4444; }
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        .toast-close { cursor: pointer; color: #999; margin-left: 8px; }
-    `;
-    document.head.appendChild(style);
+    });
 }

@@ -1,6 +1,6 @@
 /**
  * BookTracker - Login Page JavaScript
- * Handles login/signup form submission with API integration
+ * Handles login/signup with API integration
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -10,115 +10,145 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    initTabs();
+    initForms();
+});
+
+// ============================================
+// Tab Switching
+// ============================================
+function initTabs() {
+    const tabs = document.querySelectorAll('.auth-tab');
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
     const authTitle = document.getElementById('auth-title');
     const authSubtitle = document.getElementById('auth-subtitle');
-    const nameGroup = document.getElementById('name-group');
-    const submitBtn = document.getElementById('submit-btn');
-    const toggleWrapper = document.getElementById('toggle-wrapper');
-    const authForm = document.getElementById('auth-form');
 
-    // Get form inputs
-    const emailInput = authForm.querySelector('input[type="email"]');
-    const passwordInput = authForm.querySelector('input[type="password"]');
-    const nameInput = document.getElementById('user-fullname');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabName = tab.dataset.tab;
 
-    let isLogin = true;
+            // Update active tab
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
 
-    // Toggle between login and signup
-    toggleWrapper.addEventListener('click', (e) => {
-        if (e.target.id === 'toggle-auth') {
-            e.preventDefault();
-            isLogin = !isLogin;
-
-            if (isLogin) {
-                authTitle.textContent = "Welcome Back";
-                authSubtitle.textContent = "Log in to continue your reading journey.";
-                nameGroup.classList.add('hidden');
-                submitBtn.textContent = "Continue";
-                toggleWrapper.innerHTML = `New here? <a href="#" id="toggle-auth">Create Account</a>`;
+            if (tabName === 'login') {
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+                authTitle.textContent = 'Sign in';
+                authSubtitle.textContent = 'Enter your credentials to access your account';
             } else {
-                authTitle.textContent = "Create Account";
-                authSubtitle.textContent = "Join the community of cozy readers today.";
-                nameGroup.classList.remove('hidden');
-                submitBtn.textContent = "Create Account";
-                toggleWrapper.innerHTML = `Already have an account? <a href="#" id="toggle-auth">Log In</a>`;
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
+                authTitle.textContent = 'Create account';
+                authSubtitle.textContent = 'Get started with your free account today';
             }
-        }
+        });
     });
+}
 
-    // Form submission
-    authForm.addEventListener('submit', async (e) => {
+// ============================================
+// Form Submission
+// ============================================
+function initForms() {
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+
+    // Login
+    loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const email = emailInput.value.trim();
-        const password = passwordInput.value;
+        const email = document.getElementById('login-email').value.trim();
+        const password = document.getElementById('login-password').value;
+        const btn = document.getElementById('login-btn');
 
         if (!email || !password) {
             showToast('Please fill in all fields', 'error');
             return;
         }
 
-        // Disable button during request
-        submitBtn.disabled = true;
-        submitBtn.textContent = isLogin ? 'Signing in...' : 'Creating account...';
+        btn.disabled = true;
+        btn.textContent = 'Signing in...';
 
         try {
-            if (isLogin) {
-                // Login
-                const response = await BookTracker.api.login(email, password);
+            const response = await BookTracker.api.login(email, password);
 
-                localStorage.setItem('book_tracker_token', response.access_token);
-                localStorage.setItem('book_tracker_user', JSON.stringify(response.user));
+            localStorage.setItem('book_tracker_token', response.access_token);
+            localStorage.setItem('book_tracker_user', JSON.stringify(response.user));
 
-                showToast('Welcome back! 👋', 'success');
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 500);
-            } else {
-                // Signup
-                const name = nameInput.value.trim();
-                if (!name) {
-                    showToast('Please enter your name', 'error');
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Create Account';
-                    return;
-                }
-
-                await BookTracker.api.register(name, email, password);
-
-                // Auto-login after registration
-                const loginResponse = await BookTracker.api.login(email, password);
-                localStorage.setItem('book_tracker_token', loginResponse.access_token);
-                localStorage.setItem('book_tracker_user', JSON.stringify(loginResponse.user));
-
-                showToast('Account created! 🎉', 'success');
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 500);
-            }
+            showToast('Welcome back!', 'success');
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 500);
         } catch (error) {
-            showToast(error.message || 'Something went wrong', 'error');
-            submitBtn.disabled = false;
-            submitBtn.textContent = isLogin ? 'Continue' : 'Create Account';
+            showToast(error.message || 'Login failed', 'error');
+            btn.disabled = false;
+            btn.textContent = 'Sign In';
         }
     });
 
-    // Simple toast function (fallback if app.js not loaded)
-    function showToast(message, type = 'default') {
-        if (window.BookTracker?.showToast) {
-            window.BookTracker.showToast(message, type);
+    // Signup
+    signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById('signup-name').value.trim();
+        const email = document.getElementById('signup-email').value.trim();
+        const password = document.getElementById('signup-password').value;
+        const btn = document.getElementById('signup-btn');
+
+        if (!name || !email || !password) {
+            showToast('Please fill in all fields', 'error');
             return;
         }
 
-        // Fallback toast
-        const toast = document.createElement('div');
-        toast.style.cssText = `
-            position: fixed; bottom: 20px; right: 20px; padding: 16px 24px;
-            background: ${type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#333'};
-            color: white; border-radius: 8px; z-index: 9999; font-size: 14px;
-        `;
-        toast.textContent = message;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
+        btn.disabled = true;
+        btn.textContent = 'Creating account...';
+
+        try {
+            await BookTracker.api.register(name, email, password);
+
+            // Auto-login
+            const loginResponse = await BookTracker.api.login(email, password);
+            localStorage.setItem('book_tracker_token', loginResponse.access_token);
+            localStorage.setItem('book_tracker_user', JSON.stringify(loginResponse.user));
+
+            showToast('Account created!', 'success');
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 500);
+        } catch (error) {
+            showToast(error.message || 'Registration failed', 'error');
+            btn.disabled = false;
+            btn.textContent = 'Create Account';
+        }
+    });
+}
+
+// ============================================
+// Toast Helper
+// ============================================
+function showToast(message, type = 'default') {
+    if (window.BookTracker?.showToast) {
+        window.BookTracker.showToast(message, type);
+        return;
     }
-});
+
+    // Fallback
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<span>${message}</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>`;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}

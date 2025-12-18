@@ -1,44 +1,176 @@
 /**
- * Landing Page Logic
+ * BookTracker - Landing Page JavaScript
+ * Animated counters, parallax, and interactions
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    initButtons();
+    initNavbar();
+    initMobileMenu();
+    initAnimatedCounters();
+    initParallax();
 });
 
-function initButtons() {
-    // Select all signup/login triggers
-    const authButtons = document.querySelectorAll('.btn-signup, #nav-login');
+// ============================================
+// Navbar Scroll Effect
+// ============================================
+function initNavbar() {
+    const navbar = document.getElementById('navbar');
+    let lastScroll = 0;
 
-    authButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // For now, redirect to a hypothetical login page
-            // Replace 'login.html' with your actual auth page name later
-            redirectToAuth();
+    window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+
+        if (currentScroll > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+
+        lastScroll = currentScroll;
+    });
+}
+
+// ============================================
+// Mobile Menu Toggle
+// ============================================
+function initMobileMenu() {
+    const toggle = document.getElementById('nav-toggle');
+    const menu = document.getElementById('mobile-menu');
+
+    toggle?.addEventListener('click', () => {
+        menu.classList.toggle('active');
+        toggle.classList.toggle('active');
+    });
+
+    // Close menu when clicking a link
+    document.querySelectorAll('.mobile-link').forEach(link => {
+        link.addEventListener('click', () => {
+            menu.classList.remove('active');
+            toggle.classList.remove('active');
         });
     });
 }
 
-function redirectToAuth() {
-    // In a functional app, this would point to your Login/Sign-up page
-    console.log("Redirecting to Login/Sign-up...");
-    
-    // Smooth transition effect (optional)
-    document.body.style.opacity = '0';
-    setTimeout(() => {
-        window.location.href = 'login.html'; 
-    }, 300);
+// ============================================
+// Animated Counters
+// ============================================
+function initAnimatedCounters() {
+    const counters = document.querySelectorAll('.metric-value');
+
+    const observerOptions = {
+        threshold: 0.5,
+        rootMargin: '0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounter(entry.target);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    counters.forEach(counter => observer.observe(counter));
 }
 
-// Simple scroll effect for navbar
-window.addEventListener('scroll', () => {
-    const nav = document.querySelector('.navbar');
-    if (window.scrollY > 50) {
-        nav.style.background = 'rgba(253, 250, 246, 0.95)';
-        nav.style.backdropFilter = 'blur(10px)';
-        nav.style.boxShadow = '0 2px 10px rgba(0,0,0,0.05)';
-    } else {
-        nav.style.background = 'transparent';
-        nav.style.boxShadow = 'none';
+function animateCounter(element) {
+    const target = parseInt(element.dataset.target) || 0;
+    const prefix = element.dataset.prefix || '';
+    const duration = 2000;
+    const start = performance.now();
+
+    // Format number for display
+    function formatNumber(num) {
+        if (num >= 1000000000) {
+            return (num / 1000000000).toFixed(1) + 'B';
+        }
+        if (num >= 1000000) {
+            return (num / 1000000).toFixed(0) + 'M';
+        }
+        if (num >= 1000) {
+            return (num / 1000).toFixed(0) + 'K';
+        }
+        return num.toString();
     }
+
+    function easeOutQuart(t) {
+        return 1 - Math.pow(1 - t, 4);
+    }
+
+    function update(currentTime) {
+        const elapsed = currentTime - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = easeOutQuart(progress);
+        const currentValue = Math.floor(easedProgress * target);
+
+        element.textContent = prefix + formatNumber(currentValue);
+
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        } else {
+            element.textContent = prefix + formatNumber(target);
+        }
+    }
+
+    requestAnimationFrame(update);
+}
+
+// ============================================
+// Parallax Effect for Hero Cards
+// ============================================
+function initParallax() {
+    const heroVisual = document.querySelector('.hero-visual');
+    const cards = document.querySelectorAll('.hero-card');
+
+    if (!heroVisual || cards.length === 0) return;
+
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const rate = scrolled * 0.15;
+
+        cards.forEach((card, index) => {
+            const direction = index % 2 === 0 ? 1 : -1;
+            const offset = rate * direction * (0.5 + index * 0.2);
+            card.style.transform = `translateY(${offset}px)`;
+        });
+    });
+
+    // Mouse parallax
+    heroVisual.addEventListener('mousemove', (e) => {
+        const rect = heroVisual.getBoundingClientRect();
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const mouseX = e.clientX - rect.left - centerX;
+        const mouseY = e.clientY - rect.top - centerY;
+
+        cards.forEach((card, index) => {
+            const factor = 0.02 * (index + 1);
+            const x = mouseX * factor;
+            const y = mouseY * factor;
+            card.style.transform = `translate(${x}px, ${y}px)`;
+        });
+    });
+
+    heroVisual.addEventListener('mouseleave', () => {
+        cards.forEach(card => {
+            card.style.transform = 'translate(0, 0)';
+        });
+    });
+}
+
+// ============================================
+// Smooth scroll for anchor links
+// ============================================
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
 });

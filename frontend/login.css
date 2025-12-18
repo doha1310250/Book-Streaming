@@ -1,135 +1,197 @@
-:root {
-    --primary-red: #a63d40;
-    --red-hover: #8e2121;
-    --bg-cream: #fdfaf6;
-    --white: #ffffff;
-    --text-dark: #2d2323;
-    --text-muted: #6b5b5b;
-    --border: #eee3e1;
-}
+/* ============================================
+   BookTracker - Login Page Styles
+   Fortune 500 / Swiss Design
+   ============================================ */
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--bg-cream);
-    color: var(--text-dark);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.auth-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     min-height: 100vh;
-    padding: 20px;
 }
 
-.auth-container {
-    width: 100%;
-    max-width: 400px;
+/* Left Panel - Branding */
+.auth-brand {
+    background: var(--color-primary);
+    color: var(--color-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-16);
     position: relative;
 }
 
-.back-link {
-    display: inline-block;
-    margin-bottom: 24px;
-    text-decoration: none;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: color 0.2s;
+.brand-content {
+    max-width: 480px;
 }
 
-.back-link:hover { color: var(--primary-red); }
-
-.auth-card {
-    background: var(--white);
-    padding: 40px;
-    border-radius: 32px;
-    box-shadow: 0 10px 40px rgba(166, 61, 64, 0.05);
-    text-align: center;
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-weight: 700;
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-16);
 }
 
-.auth-logo {
-    font-size: 2.5rem;
-    display: block;
-    margin-bottom: 16px;
+.brand-logo .logo-mark {
+    width: 40px;
+    height: 40px;
+    background: var(--color-white);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: var(--font-size-lg);
 }
 
-h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
-    margin-bottom: 8px;
+.brand-hero {
+    margin-bottom: var(--space-16);
 }
 
-.auth-header p {
-    color: var(--text-muted);
-    font-size: 0.95rem;
-    margin-bottom: 32px;
+.brand-title {
+    font-size: var(--font-size-4xl);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: var(--space-6);
 }
 
-/* Form Styles */
-.auth-form {
+.brand-subtitle {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-light);
+    line-height: 1.6;
+}
+
+.brand-stats {
+    display: flex;
+    gap: var(--space-12);
+}
+
+.brand-stat {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    text-align: left;
+    gap: var(--space-1);
 }
 
-.hidden { display: none !important; }
-
-.input-group label {
-    display: block;
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: var(--text-dark);
+.brand-stat .stat-value {
+    font-size: var(--font-size-3xl);
+    font-weight: 800;
+    letter-spacing: -0.02em;
 }
 
-input {
+.brand-stat .stat-label {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-light);
+}
+
+/* Right Panel - Form */
+.auth-form-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-16);
+    background: var(--color-bg);
+}
+
+.auth-form-container {
     width: 100%;
-    padding: 14px 16px;
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    font-size: 1rem;
-    transition: all 0.2s;
+    max-width: 400px;
 }
 
-input:focus {
-    border-color: var(--primary-red);
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(166, 61, 64, 0.1);
+.auth-header {
+    margin-bottom: var(--space-8);
 }
 
-.btn-main {
-    background: var(--primary-red);
-    color: white;
+.auth-title {
+    font-size: var(--font-size-3xl);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-2);
+}
+
+.auth-subtitle {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-base);
+}
+
+/* Auth Tabs */
+.auth-tabs {
+    display: flex;
+    border: 1px solid var(--color-border);
+    margin-bottom: var(--space-8);
+}
+
+.auth-tab {
+    flex: 1;
+    padding: var(--space-4);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--color-bg);
     border: none;
-    padding: 16px;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background 0.2s;
+    color: var(--color-text-muted);
+    transition: all var(--transition-fast);
 }
 
-.btn-main:hover { background: var(--red-hover); }
+.auth-tab:hover {
+    color: var(--color-text);
+}
 
-/* Footer toggle */
+.auth-tab.active {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+/* Form */
+.auth-form {
+    margin-bottom: var(--space-8);
+}
+
+.auth-form.hidden {
+    display: none;
+}
+
 .auth-footer {
-    margin-top: 32px;
-    font-size: 0.9rem;
-    color: var(--text-muted);
+    text-align: center;
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
 }
 
-.auth-footer a {
-    color: var(--primary-red);
-    text-decoration: none;
-    font-weight: 600;
+.auth-link {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    transition: color var(--transition-fast);
+}
+
+.auth-link:hover {
+    color: var(--color-text);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .auth-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-brand {
+        display: none;
+    }
+
+    .auth-form-panel {
+        padding: var(--space-8);
+    }
 }
 
 @media (max-width: 480px) {
-    .auth-card {
-        padding: 30px 20px;
-        border-radius: 20px;
+    .auth-form-panel {
+        padding: var(--space-6);
     }
-    h1 { font-size: 1.5rem; }
+
+    .auth-title {
+        font-size: var(--font-size-2xl);
+    }
 }

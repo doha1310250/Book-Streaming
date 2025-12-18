@@ -167,6 +167,38 @@ const APIService = {
         });
     },
 
+    // Social endpoints
+    async getFollowing(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return this.request(`/users/me/following${query ? '?' + query : ''}`);
+    },
+
+    async getFollowers(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return this.request(`/users/me/followers${query ? '?' + query : ''}`);
+    },
+
+    async followUser(userId) {
+        return this.request(`/users/${userId}/follow`, {
+            method: 'POST'
+        });
+    },
+
+    async unfollowUser(userId) {
+        return this.request(`/users/${userId}/follow`, {
+            method: 'DELETE'
+        });
+    },
+
+    async getFollowStatus(userId) {
+        return this.request(`/users/${userId}/follow-status`);
+    },
+
+    async getFollowingActivity(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return this.request(`/users/me/following/activity${query ? '?' + query : ''}`);
+    },
+
     // Health check
     async healthCheck() {
         return this.request('/health');

@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statistics | BookTracker</title>
+    <title>Social Feed | BookTracker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="profile.css">
+    <link rel="stylesheet" href="social.css">
 </head>
 
 <body>
@@ -38,11 +38,11 @@
                         <span class="nav-item-icon">⏱</span>
                         Start Reading
                     </a>
-                    <a href="social.html" class="nav-item">
+                    <a href="social.html" class="nav-item active">
                         <span class="nav-item-icon">👥</span>
                         Social Feed
                     </a>
-                    <a href="profile.html" class="nav-item active">
+                    <a href="profile.html" class="nav-item">
                         <span class="nav-item-icon">📊</span>
                         Statistics
                     </a>
@@ -53,8 +53,8 @@
                 <div class="sidebar-user">
                     <div class="user-avatar" id="user-avatar">?</div>
                     <div class="user-info">
-                        <div class="user-name" id="sidebar-user-name">Loading...</div>
-                        <div class="user-email" id="sidebar-user-email"></div>
+                        <div class="user-name" id="user-name">Loading...</div>
+                        <div class="user-email" id="user-email"></div>
                     </div>
                 </div>
                 <button class="btn btn-ghost btn-block" id="logout-btn" style="margin-top: var(--space-4);">
@@ -67,56 +67,55 @@
         <main class="main-content">
             <header class="content-header">
                 <div>
-                    <h1 class="content-header-title">Statistics</h1>
-                    <p class="content-header-subtitle">Track your reading progress and achievements</p>
+                    <h1 class="content-header-title">Social Feed</h1>
+                    <p class="content-header-subtitle">See what your friends are reading</p>
+                </div>
+                <div class="social-stats">
+                    <div class="social-stat">
+                        <span class="stat-value" id="following-count">0</span>
+                        <span class="stat-label">Following</span>
+                    </div>
+                    <div class="social-stat">
+                        <span class="stat-value" id="followers-count">0</span>
+                        <span class="stat-label">Followers</span>
+                    </div>
                 </div>
             </header>
 
             <div class="content-body">
-                <!-- Stats Grid -->
-                <div class="stats-grid">
-                    <div class="stat-card stat-primary">
-                        <span class="stat-icon">🔥</span>
-                        <span class="stat-value" id="stat-streak">0</span>
-                        <span class="stat-label">Day Streak</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-value" id="stat-books">0</span>
-                        <span class="stat-label">Books Read</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-value" id="stat-hours">0h</span>
-                        <span class="stat-label">Total Time</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-value" id="stat-sessions">0</span>
-                        <span class="stat-label">Sessions</span>
-                    </div>
-                </div>
-
-                <!-- Profile Card -->
-                <div class="profile-card">
-                    <div class="card-header">
-                        <h2 class="card-title">Account</h2>
-                    </div>
-                    <div class="profile-info">
-                        <div class="profile-avatar" id="profile-avatar">?</div>
-                        <div class="profile-details">
-                            <h3 class="profile-name" id="profile-name">Loading...</h3>
-                            <p class="profile-email" id="profile-email">Loading...</p>
-                            <p class="profile-joined">Member since <span id="profile-joined">-</span></p>
+                <div class="social-grid">
+                    <!-- Activity Feed -->
+                    <div class="feed-section">
+                        <div class="section-header">
+                            <h2 class="section-title-sm">Activity Feed</h2>
+                        </div>
+                        <div class="feed-list" id="activity-feed">
+                            <div class="empty-state">
+                                <p>Loading activity...</p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Recent Sessions -->
-                <div class="sessions-card">
-                    <div class="card-header">
-                        <h2 class="card-title">Recent Sessions</h2>
-                    </div>
-                    <div class="sessions-list" id="sessions-list">
-                        <div class="empty-state">
-                            <p>Loading sessions...</p>
+                    <!-- Following & Followers -->
+                    <div class="users-section">
+                        <!-- Tabs -->
+                        <div class="user-tabs">
+                            <button class="user-tab active" data-tab="following">Following</button>
+                            <button class="user-tab" data-tab="followers">Followers</button>
+                        </div>
+
+                        <!-- Following List -->
+                        <div class="user-list" id="following-list">
+                            <div class="empty-state">
+                                <p>Loading...</p>
+                            </div>
+                        </div>
+
+                        <!-- Followers List (hidden by default) -->
+                        <div class="user-list hidden" id="followers-list">
+                            <div class="empty-state">
+                                <p>Loading...</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -131,7 +130,7 @@
     <div class="toast-container" id="toast-container"></div>
 
     <script src="app.js"></script>
-    <script src="profile.js"></script>
+    <script src="social.js"></script>
 </body>
 
 </html>

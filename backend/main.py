@@ -139,6 +139,15 @@ async def serve_profile():
         return FileResponse(profile_path)
     return {"message": "Profile page not found"}
 
+@app.get("/social", tags=["Frontend"], include_in_schema=False)
+@app.get("/social.html", tags=["Frontend"], include_in_schema=False)
+async def serve_social():
+    """Serve the social page"""
+    social_path = os.path.join(FRONTEND_DIR, "social.html")
+    if os.path.exists(social_path):
+        return FileResponse(social_path)
+    return {"message": "Social page not found"}
+
 # Serve CSS and JS files
 @app.get("/{filename}.css", tags=["Frontend"], include_in_schema=False)
 async def serve_css(filename: str):

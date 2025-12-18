@@ -1,0 +1,289 @@
+/* ============================================
+   BookTracker - Social Page Styles
+   Fortune 500 / Swiss Design
+   ============================================ */
+
+/* Header Stats */
+.social-stats {
+    display: flex;
+    gap: var(--space-8);
+}
+
+.social-stat {
+    text-align: center;
+}
+
+.social-stat .stat-value {
+    display: block;
+    font-size: var(--font-size-2xl);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--color-primary);
+}
+
+.social-stat .stat-label {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+}
+
+/* Social Grid */
+.social-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: var(--space-6);
+}
+
+/* Section Headers */
+.section-header {
+    padding: var(--space-5) var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-white);
+}
+
+.section-title-sm {
+    font-size: var(--font-size-base);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+/* Feed Section */
+.feed-section {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+}
+
+.feed-list {
+    max-height: calc(100vh - 300px);
+    overflow-y: auto;
+}
+
+.feed-item {
+    display: flex;
+    gap: var(--space-4);
+    padding: var(--space-5) var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+    transition: background var(--transition-fast);
+}
+
+.feed-item:hover {
+    background: var(--color-bg-alt);
+}
+
+.feed-item:last-child {
+    border-bottom: none;
+}
+
+.feed-avatar {
+    width: 40px;
+    height: 40px;
+    background: var(--color-accent);
+    color: var(--color-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: var(--font-size-sm);
+    flex-shrink: 0;
+}
+
+.feed-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.feed-user {
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+}
+
+.feed-action {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+}
+
+.feed-book {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+    padding: var(--space-3);
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+}
+
+.feed-book-cover {
+    width: 32px;
+    height: 48px;
+    background: var(--color-bg-dark);
+    flex-shrink: 0;
+}
+
+.feed-book-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.feed-book-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.feed-book-title {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.feed-book-author {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}
+
+.feed-time {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-light);
+    margin-top: var(--space-2);
+}
+
+/* Users Section */
+.users-section {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    height: fit-content;
+}
+
+.user-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.user-tab {
+    flex: 1;
+    padding: var(--space-4);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--color-bg);
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.user-tab:hover {
+    color: var(--color-text);
+}
+
+.user-tab.active {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+.user-list {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.user-list.hidden {
+    display: none;
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.user-item:last-child {
+    border-bottom: none;
+}
+
+.user-item-avatar {
+    width: 40px;
+    height: 40px;
+    background: var(--color-primary);
+    color: var(--color-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: var(--font-size-sm);
+    flex-shrink: 0;
+}
+
+.user-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.user-item-name {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-item-email {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-item-date {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-light);
+}
+
+.btn-follow {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-size-xs);
+}
+
+.btn-unfollow {
+    background: transparent;
+    color: var(--color-text-muted);
+    border-color: var(--color-border);
+}
+
+.btn-unfollow:hover {
+    border-color: var(--color-error);
+    color: var(--color-error);
+}
+
+/* Empty State */
+.feed-section .empty-state,
+.users-section .empty-state {
+    padding: var(--space-12);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .social-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .users-section {
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .social-stats {
+        gap: var(--space-4);
+    }
+
+    .feed-item {
+        padding: var(--space-4);
+    }
+}

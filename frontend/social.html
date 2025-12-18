@@ -96,12 +96,13 @@
                         </div>
                     </div>
 
-                    <!-- Following & Followers -->
+                    <!-- Following, Followers & Explore -->
                     <div class="users-section">
                         <!-- Tabs -->
                         <div class="user-tabs">
                             <button class="user-tab active" data-tab="following">Following</button>
                             <button class="user-tab" data-tab="followers">Followers</button>
+                            <button class="user-tab" data-tab="explore">Explore</button>
                         </div>
 
                         <!-- Following List -->
@@ -111,10 +112,25 @@
                             </div>
                         </div>
 
-                        <!-- Followers List (hidden by default) -->
+                        <!-- Followers List -->
                         <div class="user-list hidden" id="followers-list">
                             <div class="empty-state">
                                 <p>Loading...</p>
+                            </div>
+                        </div>
+
+                        <!-- Explore/Discover Users -->
+                        <div class="user-list hidden" id="explore-list">
+                            <div class="explore-search">
+                                <input type="text" id="explore-search-input" class="form-input"
+                                    placeholder="Search by name or email...">
+                                <button class="btn btn-primary" id="explore-search-btn">Search</button>
+                            </div>
+                            <div class="explore-results" id="explore-results">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">🔍</div>
+                                    <p>Discover new readers to follow</p>
+                                </div>
                             </div>
                         </div>
                     </div>

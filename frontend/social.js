@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initUserInfo();
     initTabs();
     initMobileMenu();
+    initExploreSearch();
 
     await loadSocialStats();
     await loadActivityFeed();
@@ -40,20 +41,47 @@ function initTabs() {
     const tabs = document.querySelectorAll('.user-tab');
     const followingList = document.getElementById('following-list');
     const followersList = document.getElementById('followers-list');
+    const exploreList = document.getElementById('explore-list');
 
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
             tabs.forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
 
+            // Hide all lists
+            followingList.classList.add('hidden');
+            followersList.classList.add('hidden');
+            exploreList.classList.add('hidden');
+
+            // Show selected tab
             if (tab.dataset.tab === 'following') {
                 followingList.classList.remove('hidden');
-                followersList.classList.add('hidden');
-            } else {
-                followingList.classList.add('hidden');
+            } else if (tab.dataset.tab === 'followers') {
                 followersList.classList.remove('hidden');
+            } else if (tab.dataset.tab === 'explore') {
+                exploreList.classList.remove('hidden');
+                // Load suggested users on first open
+                if (!exploreList.dataset.loaded) {
+                    loadSuggestedUsers();
+                    exploreList.dataset.loaded = 'true';
+                }
             }
         });
+    });
+}
+
+function initExploreSearch() {
+    const searchInput = document.getElementById('explore-search-input');
+    const searchBtn = document.getElementById('explore-search-btn');
+
+    searchBtn.addEventListener('click', () => {
+        searchUsers(searchInput.value.trim());
+    });
+
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            searchUsers(searchInput.value.trim());
+        }
     });
 }
 
@@ -293,4 +321,119 @@ function formatTimeAgo(dateString) {
     if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
 
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+// ============================================
+// Explore Users
+// ============================================
+async function searchUsers(query) {
+    const container = document.getElementById('explore-results');
+    container.innerHTML = '<div class="empty-state"><p>Searching...</p></div>';
+
+    try {
+        const users = await BookTracker.api.searchUsers({ query, limit: 20 });
+        await renderExploreUsers(users, container);
+    } catch (error) {
+        console.error('Search failed:', error);
+        container.innerHTML = `
+            <div class="empty-state">
+                <p>Failed to search users.</p>
+            </div>
+        `;
+    }
+}
+
+async function loadSuggestedUsers() {
+    const container = document.getElementById('explore-results');
+    container.innerHTML = '<div class="empty-state"><p>Loading suggestions...</p></div>';
+
+    try {
+        // Get all users (excluding self)
+        const users = await BookTracker.api.searchUsers({ limit: 20 });
+        await renderExploreUsers(users, container, true);
+    } catch (error) {
+        console.error('Failed to load suggestions:', error);
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">🔍</div>
+                <p>Search for users above</p>
+            </div>
+        `;
+    }
+}
+
+async function renderExploreUsers(users, container, isSuggested = false) {
+    if (!users || users.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <p>${isSuggested ? 'No users to suggest yet.' : 'No users found.'}</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Get currently following list
+    let followingIds = new Set();
+    try {
+        const followingResponse = await BookTracker.api.getFollowing({ limit: 100 });
+        followingIds = new Set((followingResponse.following || []).map(u => u.user_id));
+    } catch (e) {
+        console.warn('Could not fetch following list');
+    }
+
+    container.innerHTML = '';
+
+    users.forEach(user => {
+        const initial = (user.name?.charAt(0) || user.email?.charAt(0) || '?').toUpperCase();
+        const isFollowing = followingIds.has(user.user_id);
+
+        const item = document.createElement('div');
+        item.className = 'user-item';
+        item.innerHTML = `
+            <a href="user-profile.html?id=${user.user_id}" class="user-item-avatar clickable">${initial}</a>
+            <a href="user-profile.html?id=${user.user_id}" class="user-item-info clickable">
+                <div class="user-item-name">${user.name || 'Unnamed'}</div>
+                <div class="user-item-email">${user.email || ''}</div>
+            </a>
+            ${isFollowing
+                ? `<button class="btn btn-secondary btn-follow btn-unfollow" data-user-id="${user.user_id}">Following</button>`
+                : `<button class="btn btn-primary btn-follow" data-user-id="${user.user_id}">Follow</button>`
+            }
+        `;
+        container.appendChild(item);
+    });
+
+    // Add follow/unfollow handlers
+    container.querySelectorAll('.btn-follow').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const userId = btn.dataset.userId;
+            const isUnfollow = btn.classList.contains('btn-unfollow');
+
+            try {
+                btn.disabled = true;
+                btn.textContent = '...';
+
+                if (isUnfollow) {
+                    await BookTracker.api.unfollowUser(userId);
+                    btn.classList.remove('btn-unfollow', 'btn-secondary');
+                    btn.classList.add('btn-primary');
+                    btn.textContent = 'Follow';
+                    BookTracker.showToast('Unfollowed', 'default');
+                } else {
+                    await BookTracker.api.followUser(userId);
+                    btn.classList.add('btn-unfollow', 'btn-secondary');
+                    btn.classList.remove('btn-primary');
+                    btn.textContent = 'Following';
+                    BookTracker.showToast('Following!', 'success');
+                }
+
+                btn.disabled = false;
+                await loadSocialStats();
+            } catch (error) {
+                BookTracker.showToast(error.message || 'Action failed', 'error');
+                btn.disabled = false;
+                btn.textContent = isUnfollow ? 'Following' : 'Follow';
+            }
+        });
+    });
 }

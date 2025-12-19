@@ -1,5 +1,5 @@
 # main.py - Complete with all routes
-from fastapi import FastAPI, HTTPException, Depends, status, UploadFile, File, Query, Path
+from fastapi import FastAPI, HTTPException, Depends, status, UploadFile, File, Query, Path, Form
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 import logging
 from typing import List, Optional, Dict, Any
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from decimal import Decimal
 import os
 
@@ -509,9 +509,9 @@ async def search_users(
 
 @app.post("/books", response_model=BookResponse, status_code=status.HTTP_201_CREATED, tags=["Books"])
 async def create_book(
-    title: str = Query(..., description="Book title"),
-    author_name: str = Query(..., description="Author name"),
-    publish_date: Optional[date] = Query(None, description="Publication date"),
+    title: str = Form(..., description="Book title"),
+    author_name: str = Form(..., description="Author name"),
+    publish_date: Optional[date] = Form(None, description="Publication date"),
     cover_image: Optional[UploadFile] = File(None, description="Book cover image"),
     current_user: dict = Depends(get_current_user)
 ):

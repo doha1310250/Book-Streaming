@@ -25,6 +25,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadBooks();
     await loadMarkedBooks();
     await loadStats();
+
+    // Poll for stats updates every 10 seconds
+    setInterval(loadStats, 10000);
 });
 
 // ============================================
@@ -114,7 +117,14 @@ async function loadMarkedBooks() {
 
 async function loadStats() {
     try {
-        document.getElementById('stat-books').textContent = libraryBooks.length;
+        // Fetch accurate stats from backend
+        try {
+            const stats = await BookTracker.api.getBookStats();
+            document.getElementById('stat-books').textContent = stats.total_books;
+        } catch (e) {
+            console.warn('Stats endpoint unavailable, falling back to loaded count');
+            document.getElementById('stat-books').textContent = libraryBooks.length;
+        }
 
         const sessions = await BookTracker.api.getMyReadingSessions({ limit: 100 });
         document.getElementById('stat-sessions').textContent = sessions.length;

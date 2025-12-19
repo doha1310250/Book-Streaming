@@ -568,6 +568,22 @@ async def create_book(
             detail="Failed to create book"
         )
 
+@app.get("/books/stats", tags=["Books"])
+async def get_book_stats():
+    """Get total count of books in the library"""
+    try:
+        with db.get_connection() as connection:
+            with db.get_cursor(connection) as cursor:
+                cursor.execute("SELECT COUNT(*) as count FROM books")
+                result = cursor.fetchone()
+                return {"total_books": result["count"]}
+    except Exception as e:
+        logger.error(f"Failed to fetch book stats: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch book stats"
+        )
+
 @app.get("/books", response_model=List[BookResponse], tags=["Books"])
 async def get_books(
     title: Optional[str] = Query(None, description="Search by title"),

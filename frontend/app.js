@@ -92,6 +92,10 @@ const APIService = {
     },
 
     // Books endpoints
+    async getBookStats() {
+        return this.request('/books/stats');
+    },
+
     async getBooks(params = {}) {
         const query = new URLSearchParams(params).toString();
         return this.request(`/books${query ? '?' + query : ''}`);

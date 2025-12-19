@@ -1,22 +1,31 @@
-# 📚 Book Streaming API
+# 📚 Book Streaming Platform
 
-A RESTful API backend for a book streaming platform built with **FastAPI** and **MySQL**.
+A full-stack book streaming platform featuring a **FastAPI** backend and a **Vanilla JS** frontend.
 
 ## ✨ Features
 
+### Frontend (UI/UX)
+- **Modern Dashboard** - Clean, responsive interface with skeleton loading states
+- **Dark Mode** - Fully supported system-wide dark theme
+- **Reading Streak Calendar** - GitHub-style heatmap of your reading activity
+- **Book Management** - Add your own books (marked as unverified/community)
+- **Immersive Reading** - Distraction-free reading timer and tracker
+- **Social Hub** - Discover users, follow friends, and see their activity
+
+### Backend (API)
 - **User Authentication** - Registration, login with JWT tokens
-- **Reading Streaks** - Gamified streak tracking for daily reading
-- **Book Management** - Full CRUD with cover image uploads
+- **Book CRUD** - Management with cover image uploads
 - **Reviews & Ratings** - Rate and review books (0-5 scale)
 - **Bookmarks** - Mark books for later reading
-- **Reading Sessions** - Track reading activity and duration
-- **Social Features** - Follow other users
+- **Reading Sessions** - Track reading duration and progress logic
+- **Social Graph** - Follow/Unfollow system
 
 ## 🛠 Tech Stack
 
 | Component | Technology |
 |-----------|------------|
-| Framework | FastAPI |
+| Frontend | HTML5, CSS3, Vanilla JavaScript |
+| Backend | FastAPI (Python 3.10+) |
 | Database | MySQL 8.0 |
 | Validation | Pydantic v2 |
 | Testing | pytest + httpx |
@@ -25,82 +34,75 @@ A RESTful API backend for a book streaming platform built with **FastAPI** and *
 ---
 
 ## 🚀 Quick Start
-
-### Option 1: Docker (Recommended)
-
-The fastest way to get started - just one command:
-
-```bash
-# Start the entire stack (API + MySQL)
-docker-compose up -d
-
-# View logs
-docker-compose logs -f backend
-
-# Stop everything
-docker-compose down
-```
-
-**API will be available at:** http://localhost:8000
-
-> **Note:** First startup takes 1-2 minutes while MySQL initializes.
-
----
-
-### Option 2: Manual Setup
-
-#### Prerequisites
-
-- **Python 3.10+**
-- **MySQL 8.0+** running locally
-
-#### Step 1: Clone and Setup
-
-```bash
-cd Book-Streaming
-
-# Create virtual environment
-python -m venv venv
-
-# Activate (Windows)
-.\venv\Scripts\Activate
-
-# Activate (Linux/Mac)
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-#### Step 2: Configure Database
-
-1. Create the database in MySQL:
-   ```sql
-   CREATE DATABASE `book-streaming`;
-   ```
-
-2. Copy environment template:
-   ```bash
-   cp .env.example .env
-   ```
-
-3. Edit `.env` with your MySQL credentials:
-   ```env
-   DATABASE_HOST=127.0.0.1
-   DATABASE_PORT=3306
-   DATABASE_USER=root
-   DATABASE_PASSWORD=your_password
-   DATABASE_NAME=book-streaming
-   ```
-
-#### Step 3: Run the Server
-
-```bash
-cd backend
-uvicorn main:app --reload
-```
-
-**API will be available at:** http://127.0.0.1:8000
+ 
+ ### Option 1: Docker (Full Stack)
+ 
+ Start the entire platform (Frontend + Backend + DB) with one command:
+ 
+ ```bash
+ # Start the stack
+ docker-compose up -d
+ 
+ # View logs
+ docker-compose logs -f
+ ```
+ 
+ - **Frontend:** http://localhost:3000 (Open this!)
+ - **Backend API:** http://localhost:8000
+ 
+ > **Note:** First startup takes 1-2 minutes while MySQL initializes.
+ 
+ ---
+ 
+ ### Option 2: Manual Setup
+ 
+ #### Prerequisites
+ - **Python 3.10+**
+ - **MySQL 8.0+** running locally
+ - **Web Browser** (Chrome/Firefox/Edge)
+ 
+ #### Step 1: Backend Setup
+ 
+ ```bash
+ cd backend
+ 
+ # Create & Activate venv
+ python -m venv venv
+ .\venv\Scripts\Activate  # Windows
+ # source venv/bin/activate  # Linux/Mac
+ 
+ # Install dependencies
+ pip install -r requirements.txt
+ ```
+ 
+ #### Step 2: Configure Database
+ 
+ 1. Create MySQL database: `CREATE DATABASE book-streaming;`
+ 2. Copy `.env.example` to `.env`
+ 3. Update `.env` with your DB credentials.
+ 
+ #### Step 3: Run the API
+ 
+ ```bash
+ # From backend directory
+ uvicorn main:app --reload
+ ```
+ 
+ **API is running at:** http://127.0.0.1:8000
+ 
+ #### Step 4: Run the Frontend
+ 
+ You can simply open `frontend/index.html` in your browser.
+ 
+ For a better experience (to avoid CORS issues with some local file restrictions), use a simple HTTP server:
+ 
+ ```bash
+ # From project root
+ cd frontend
+ python -m http.server 5500
+ ```
+ 
+ **Open:** http://localhost:5500
 
 ---
 
@@ -229,6 +231,12 @@ uvicorn main:app --reload --log-level debug
 
 ```
 Book-Streaming/
+├── frontend/            # Vanilla JS Frontend
+│   ├── index.html       # Landing page (Login/Register)
+│   ├── dashboard.html   # User dashboard
+│   ├── app.js           # API Service & Core logic
+│   ├── styles.css       # Global styles & specific CSS files
+│   └── ...              # Page-specific JS/HTML files
 ├── backend/
 │   ├── main.py          # FastAPI app & routes
 │   ├── models.py        # Pydantic models
@@ -239,7 +247,7 @@ Book-Streaming/
 │   ├── tests/           # Test suite
 │   └── pytest.ini       # pytest configuration
 ├── docker-compose.yml   # Docker orchestration
-├── Dockerfile           # Container build
+├── Dockerfile           # Backend Container build
 ├── requirements.txt     # Python dependencies
 ├── .env.example         # Environment template
 └── README.md

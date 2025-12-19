@@ -43,5 +43,18 @@ services:
       timeout: 10s
       retries: 3
 
+  # Nginx Frontend
+  frontend:
+    image: nginx:alpine
+    container_name: book-streaming-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - backend
+
 volumes:
   mysql_data:

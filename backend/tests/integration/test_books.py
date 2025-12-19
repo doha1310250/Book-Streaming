@@ -22,7 +22,7 @@ class TestBookCreation:
         """Test successful book creation."""
         response = client.post(
             "/books",
-            params=test_book_data,
+            data=test_book_data,
             headers=authenticated_headers
         )
         
@@ -37,14 +37,14 @@ class TestBookCreation:
     
     def test_create_book_without_auth(self, client, test_book_data):
         """Test that book creation requires authentication."""
-        response = client.post("/books", params=test_book_data)
+        response = client.post("/books", data=test_book_data)
         assert response.status_code == 401
     
     def test_create_book_empty_title(self, client, authenticated_headers):
         """Test that empty title is rejected."""
         response = client.post(
             "/books",
-            params={"title": "", "author_name": "Test Author"},
+            data={"title": "", "author_name": "Test Author"},
             headers=authenticated_headers
         )
         assert response.status_code in [400, 422]  # Either is valid for validation errors
@@ -53,7 +53,7 @@ class TestBookCreation:
         """Test that empty author is rejected."""
         response = client.post(
             "/books",
-            params={"title": "Test Book", "author_name": ""},
+            data={"title": "Test Book", "author_name": ""},
             headers=authenticated_headers
         )
         assert response.status_code in [400, 422]  # Either is valid for validation errors
@@ -191,7 +191,7 @@ class TestBookDeletion:
         from utils import generate_id
         create_response = client.post(
             "/books",
-            params={
+            data={
                 "title": f"Book to Delete {generate_id()[:8]}",
                 "author_name": "Delete Author"
             },

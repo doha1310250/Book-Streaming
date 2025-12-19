@@ -63,7 +63,7 @@ class TestCompleteUserJourney:
             "title": f"E2E Test Book {unique_id}",
             "author_name": "E2E Test Author"
         }
-        book_response = client.post("/books", params=book_data, headers=headers)
+        book_response = client.post("/books", data=book_data, headers=headers)
         assert book_response.status_code == 201, f"Book creation failed: {book_response.text}"
         book = book_response.json()
         clean_test_data["books"].append(book["book_id"])
@@ -125,7 +125,7 @@ class TestCompleteUserJourney:
         
         # Create some books
         for i in range(3):
-            book_response = client.post("/books", params={
+            book_response = client.post("/books", data={
                 "title": f"Discovery Book {unique_id} Part {i+1}",
                 "author_name": f"Author {unique_id}"
             }, headers=headers)
@@ -185,7 +185,7 @@ class TestCompleteUserJourney:
         clean_test_data["users"].append(login_response.json()["user"]["user_id"])
         
         # Create book
-        book_response = client.post("/books", params={
+        book_response = client.post("/books", data={
             "title": f"Book for Reviews {unique_id}",
             "author_name": "Review Author"
         }, headers=headers)

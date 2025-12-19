@@ -166,7 +166,7 @@ def create_test_book(client, authenticated_headers, test_book_data, clean_test_d
     """
     response = client.post(
         "/books",
-        params=test_book_data,
+        data=test_book_data,
         headers=authenticated_headers
     )
     assert response.status_code == 201, f"Failed to create book: {response.text}"

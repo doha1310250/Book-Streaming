@@ -1321,7 +1321,9 @@ async def update_reading_session(
             start_time = start_time.replace(tzinfo=None)
         
         duration = end_time - start_time
-        duration_min = max(0, int(duration.total_seconds() / 60))
+        # Round up to 1 minute if there is any duration, otherwise 0
+        total_seconds = duration.total_seconds()
+        duration_min = max(1, int(total_seconds / 60)) if total_seconds > 0 else 0
     except Exception as e:
         logger.warning(f"Duration calculation error: {e}, defaulting to 0")
         duration_min = 0

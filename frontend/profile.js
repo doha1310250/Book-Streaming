@@ -94,7 +94,22 @@ async function loadStreakCalendar() {
         const readingByDate = {};
         sessions.forEach(session => {
             if (session.start_time) {
-                const date = new Date(session.start_time).toISOString().split('T')[0];
+                let timeStr = session.start_time;
+                // Append Z if missing to force UTC interpretation (prevent local time shift)
+                if (!timeStr.endsWith('Z') && !timeStr.includes('+')) {
+                    timeStr += 'Z';
+                }
+
+                // Use local date to match user's perspective
+                const date = new Date(timeStr).toLocaleDateString('en-CA');
+
+                console.log('[Calendar] Processing session:', {
+                    raw: session.start_time,
+                    fixed: timeStr,
+                    localDate: date,
+                    duration: session.duration_min
+                });
+
                 const duration = session.duration_min || 0;
                 readingByDate[date] = (readingByDate[date] || 0) + duration;
             }
@@ -106,8 +121,8 @@ async function loadStreakCalendar() {
 
         for (let i = 83; i >= 0; i--) {
             const date = new Date(today);
-            date.setDate(date.getDate() - i);
-            const dateStr = date.toISOString().split('T')[0];
+            date.setDate(today.getDate() - i);
+            const dateStr = date.toLocaleDateString('en-CA');
             const minutes = readingByDate[dateStr] || 0;
 
             // Calculate level based on reading time

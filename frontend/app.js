@@ -171,6 +171,10 @@ const APIService = {
         });
     },
 
+    async getBookReviewsSummary(bookId) {
+        return this.request(`/books/${bookId}/reviews/summary`);
+    },
+
     // Social endpoints
     async getFollowing(params = {}) {
         const query = new URLSearchParams(params).toString();

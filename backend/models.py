@@ -124,6 +124,7 @@ class ReviewResponse(ReviewBase):
     id: str
     user_id: str
     book_id: str
+    user_name: Optional[str] = None
     created_at: datetime
     updated_at: datetime
     
